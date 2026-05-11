@@ -66,21 +66,14 @@ const isID = lang === "id";
             <h2 class="text-2xl font-bold mb-6">{isID ? "Mulai Inquiry Proyek" : "Start a Project Inquiry"}</h2>
             <p class="text-muted-foreground mb-8">
               {isID
-                ? "Untuk versi awal (v1), inquiry dilakukan via email atau form eksternal, jadi tidak ada dependency backend form."
-                : "For v1, inquiry is handled via email or external form so there's no backend dependency."}
+                ? "Silakan kirim detail kebutuhan Anda lewat Google Form atau email. Saya biasanya merespons dalam 24 jam."
+                : "Please share your project details through the Google Form or email. I usually respond within 24 hours."}
             </p>
             <div class="space-y-4">
               <Button href={`mailto:${site.email}?subject=Project%20Inquiry%20from%20berutu.dev`} class="w-full">{isID ? "Kirim Email" : "Email Me"}</Button>
-              <Button href="https://tally.so" target="_blank" rel="noopener noreferrer" variant="outline" class="w-full">{isID ? "Form Eksternal (Placeholder)" : "External Form (Tally Placeholder)"}</Button>
-            </div>
-            <div class="mt-8 pt-8 border-t border-border">
-              <h3 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">{isID ? "Saran isi inquiry" : "Suggested inquiry details"}</h3>
-              <ul class="space-y-2 text-sm text-muted-foreground">
-                <li>{isID ? "Nama dan perusahaan/tim" : "Name and company/team"}</li>
-                <li>{isID ? "Jenis proyek (MVP, dashboard, API, deployment)" : "Project type (MVP, dashboard, API, deployment)"}</li>
-                <li>{isID ? "Estimasi timeline dan budget range" : "Expected timeline and budget range"}</li>
-                <li>{isID ? "Ringkasan problem statement" : "Brief problem statement"}</li>
-              </ul>
+              <Button href="https://forms.gle/wVmTkP2k9FPCqSSH9" target="_blank" rel="noopener noreferrer" variant="outline" class="w-full">
+                {isID ? "Isi Google Form Inquiry" : "Fill Project Inquiry Form"}
+              </Button>
             </div>
           </Card>
         </div>

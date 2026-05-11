@@ -1,43 +1,88 @@
-# Astro Starter Kit: Minimal
+# berutu.dev
 
-```sh
-npm create astro@latest -- --template minimal
+Personal portfolio, blog, and freelance sales website for `berutu.dev`.
+
+## Stack
+
+- Astro
+- React (interactive components only)
+- TypeScript
+- Tailwind CSS
+- MDX content collections
+
+## Local Development
+
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+App runs on `http://localhost:4321`.
 
-## 🚀 Project Structure
+## Build
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm run build
+npm run preview
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Routes
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Primary localized routes:
 
-Any static assets, like images, can be placed in the `public/` directory.
+- `/en/*`
+- `/id/*`
 
-## 🧞 Commands
+Key pages:
 
-All commands are run from the root of the project, from a terminal:
+- `/en`, `/id`
+- `/en/work`, `/id/work`
+- `/en/blog`, `/id/blog`
+- `/en/blog/[slug]`, `/id/blog/[slug]`
+- `/en/services`, `/id/services`
+- `/en/about`, `/id/about`
+- `/en/contact`, `/id/contact`
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Legacy compatibility routes:
 
-## 👀 Want to learn more?
+- `/blog` redirects to `/en/blog` (`301`)
+- `/blog/[slug]` redirects to `/en/blog/[slug]` (`301`)
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Content
+
+Blog and work content is managed with Astro content collections:
+
+- `src/content/blog`
+- `src/content/work`
+
+Language is declared per content file using frontmatter `lang: en | id`.
+
+## Branding Assets
+
+Brand assets are stored in `public/brand`:
+
+- `logo-primary.png` (light mode logo)
+- `logo-reversed.png` (dark mode logo)
+- `icon-on-color.png` (favicon/app icon/social fallback image)
+- `logo-monochrome.png` (fallback/document use only)
+
+Current usage:
+
+- Header:
+  - Desktop: theme-aware full logo
+  - Mobile: `icon-on-color.png`
+- Footer: theme-aware full logo
+- SEO/favicon:
+  - favicon + apple-touch-icon use `icon-on-color.png`
+  - default social image fallback uses `icon-on-color.png`
+
+## Important Files
+
+- `src/i18n.ts` (locale detection + localized path helpers)
+- `src/components/layout/SiteHeader.astro`
+- `src/components/layout/SiteFooter.astro`
+- `src/components/layout/SEO.astro`
+- `src/pages/[lang]/blog/index.astro`
+- `src/pages/[lang]/blog/[slug].astro`
+- `src/pages/blog/index.astro` (redirect)
+- `src/pages/blog/[slug].astro` (redirect)
