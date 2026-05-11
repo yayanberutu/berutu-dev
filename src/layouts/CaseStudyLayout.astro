@@ -7,6 +7,8 @@ const { frontmatter } = Astro.props;
 const { 
   title, 
   subtitle, 
+  seoTitle,
+  seoDescription,
   role, 
   clientType, 
   projectType, 
@@ -18,7 +20,7 @@ const {
 } = frontmatter;
 ---
 
-<BaseLayout title={title} description={subtitle} image={coverImage}>
+<BaseLayout title={seoTitle || title} description={seoDescription || subtitle} image={coverImage}>
   <article class="pt-16 pb-24">
     <header class="container mx-auto px-4 max-w-4xl mb-16">
       <div class="flex flex-wrap gap-2 mb-6">

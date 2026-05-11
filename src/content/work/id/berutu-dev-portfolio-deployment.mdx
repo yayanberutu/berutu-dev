@@ -1,0 +1,200 @@
+---
+lang: id
+title: "berutu.dev — Personal Portfolio, Technical Blog, dan VPS Deployment"
+subtitle: "Website personal brand end-to-end yang dibangun dengan Astro, React, Docker, Caddy, Cloudflare, dan Hetzner VPS."
+description: "Membangun dan deploy portfolio personal serta technical blog dengan Astro, React, Docker, Caddy, Cloudflare DNS, dan Hetzner VPS."
+seoTitle: "Studi Kasus Deployment Portfolio & Blog berutu.dev"
+seoDescription: "Studi kasus membangun dan deploy berutu.dev dengan Astro, React, Docker, Caddy, Cloudflare DNS, dan Hetzner VPS."
+role: "Full-stack Developer / DevOps"
+clientType: "Personal Brand / Freelance Positioning"
+projectType: "Website Portfolio dan Production Deployment"
+status: "Live"
+stack: ["Astro", "React", "TypeScript", "Tailwind CSS", "MDX", "Docker", "Caddy", "Cloudflare", "Hetzner", "VPS Deployment"]
+featured: true
+demoUrl: "https://berutu.dev"
+githubUrl: "https://github.com/yayanberutu/berutu-dev"
+coverImage: ""
+---
+
+## Ringkasan
+
+`berutu.dev` dibangun sebagai website portfolio personal, platform technical writing, dan aset kredibilitas freelance.  
+Tujuan utamanya adalah menampilkan pengalaman proyek secara profesional, mempublikasikan artikel teknis secara konsisten, dan membuktikan kemampuan engineering end-to-end dari frontend sampai production deployment.
+
+Website ini diposisikan untuk founder dan tim kecil yang mencari AI-assisted full-stack developer untuk membangun MVP, backend API, admin dashboard, dan web app yang siap dipakai.
+
+## Problem dan Motivasi
+
+Sebelum proyek ini, belum ada platform khusus untuk:
+
+- menampilkan studi kasus secara profesional
+- mempublikasikan technical writing dengan pengalaman baca yang rapi
+- mendukung dark mode dan light mode
+- berjalan mandiri di VPS yang dikelola sendiri
+- menunjukkan kemampuan deployment dan operasional secara nyata
+
+Untuk positioning freelance dan Upwork, gap ini mengurangi trust karena capability teknis sulit diverifikasi langsung.
+
+## Solusi
+
+Saya membangun arsitektur yang cepat dan content-focused dengan Astro, React, TypeScript, Tailwind CSS, dan MDX.  
+Deployment dilakukan di Hetzner CPX12 (Ubuntu) menggunakan Docker Compose, dengan Caddy sebagai reverse proxy dan terminasi HTTPS.
+
+Pendekatan ini menyeimbangkan:
+
+- kecepatan produksi konten (publikasi berbasis MDX)
+- performa frontend tinggi (Astro static output)
+- infrastruktur yang reproducible (deployment berbasis Docker)
+- alur traffic publik yang bersih (single reverse proxy entrypoint)
+
+## Arsitektur
+
+```text
+User Browser
+→ Cloudflare DNS
+→ Hetzner VPS
+→ Caddy Reverse Proxy
+→ Docker container: berutu-portfolio
+→ Astro static site
+```
+
+Pembagian tanggung jawab infrastruktur:
+
+- Porkbun: registrar domain
+- Cloudflare: DNS provider
+- Hetzner CPX12: VPS hosting
+- Docker Compose: deployment aplikasi
+- Caddy: reverse proxy + HTTPS
+
+## Sorotan Implementasi
+
+### 1) Setup Domain dan DNS
+
+- Domain `berutu.dev` dibeli di Porkbun
+- Nameserver dipindahkan dari Porkbun ke Cloudflare
+- Record yang dipakai:
+
+```text
+A      @      -> 5.223.79.193
+CNAME  www    -> berutu.dev
+```
+
+- Mode DNS-only dipakai saat setup dan validasi awal
+
+### 2) Provisioning VPS
+
+- Provider: Hetzner
+- Plan: CPX12
+- OS: Ubuntu
+- User server: `admin`
+
+### 3) Hardening Server
+
+- Mengaktifkan UFW firewall
+- Membuat swap 2GB agar build dan deployment stabil pada RAM terbatas
+- Menginstal Docker Engine dan Docker Compose plugin
+
+### 4) Deployment Berbasis Docker
+
+- Membuat external Docker network: `web`
+- Menjalankan portfolio sebagai service containerized
+- Menjaga deployment tetap reproducible untuk update berikutnya
+
+### 5) Reverse Proxy Caddy
+
+- Container Caddy utama membuka port `80` dan `443`
+- App portfolio hanya melayani HTTP internal `berutu-portfolio:80`
+- Caddy menangani routing domain publik dan HTTPS
+
+```caddy
+berutu.dev {
+    reverse_proxy berutu-portfolio:80
+}
+
+www.berutu.dev {
+    redir https://berutu.dev{uri}
+}
+```
+
+### 6) Astro Production Build
+
+- Artefak deploy berupa static output dari Astro
+- Container runtime menyajikan static files di belakang reverse proxy
+- Hasilnya: operasional sederhana dengan performa yang kuat
+
+### 7) Troubleshooting: Node.js Version Mismatch
+
+Build awal gagal karena base image memakai Node.js 20, sementara Astro membutuhkan versi lebih baru.
+
+Perbaikan:
+
+```dockerfile
+FROM node:22-alpine AS build
+```
+
+### 8) Troubleshooting: Konflik Reverse Proxy Caddy
+
+Awalnya Caddyfile di repository ini mencoba menangani domain publik langsung, sehingga konflik dengan service Caddy utama di VPS.
+
+Resolusi:
+
+- Caddy utama jadi satu-satunya reverse proxy publik
+- Container portfolio hanya serve HTTP internal
+- Caddy utama reverse proxy ke `berutu-portfolio:80`
+
+### 9) Troubleshooting: DNS Propagation
+
+Saat rollout, nameserver authoritative Cloudflare sudah mengembalikan IP benar, tapi sebagian resolver publik/lokal masih mengembalikan IP parking Porkbun:
+
+```text
+44.227.76.166
+44.227.65.245
+```
+
+Perintah validasi:
+
+```bash
+dig @dimitris.ns.cloudflare.com A berutu.dev +short
+dig @dora.ns.cloudflare.com A berutu.dev +short
+curl -k -I --resolve berutu.dev:443:5.223.79.193 https://berutu.dev
+```
+
+Testing lokal sementara saat cache belum sinkron:
+
+```text
+5.223.79.193 berutu.dev www.berutu.dev
+```
+
+### 10) Validasi Produksi Akhir
+
+```bash
+docker exec caddy wget -qO- http://berutu-portfolio:80 | head
+curl -k -I --resolve berutu.dev:443:5.223.79.193 https://berutu.dev
+```
+
+Ekspektasi:
+
+```text
+HTTP/2 200
+server: Caddy
+```
+
+## Pelajaran Kunci
+
+- Pisahkan tanggung jawab registrar, DNS provider, dan hosting dengan jelas
+- Gunakan satu reverse proxy publik untuk HTTPS
+- Biarkan container aplikasi hanya melayani HTTP internal di belakang reverse proxy
+- Validasi propagasi DNS melalui nameserver authoritative
+- Docker membantu deployment tetap konsisten dan mudah direplikasi
+- `/etc/hosts` berguna untuk testing lokal sementara saat propagasi DNS
+
+## Hasil Akhir
+
+- `https://berutu.dev` live dan stabil
+- HTTPS berjalan end-to-end via Caddy
+- Portfolio disajikan dari container Docker di belakang reverse proxy
+- Setup siap dikembangkan untuk subdomain berikutnya:
+  - `hkbp.berutu.dev`
+  - `api-hkbp.berutu.dev`
+
+Proyek ini menunjukkan kemampuan end-to-end, dari pembelian domain, konfigurasi DNS, provisioning server, deployment aplikasi, hingga troubleshooting produksi.
