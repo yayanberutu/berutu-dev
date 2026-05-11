@@ -24,6 +24,8 @@ const work = defineCollection({
     title: z.string(),
     subtitle: z.string(),
     description: z.string(),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
     role: z.string(),
     clientType: z.string(),
     projectType: z.string(),
