@@ -1,0 +1,69 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const categories = [
+  {
+    title: "Hardware",
+    items: [
+      { name: "MacBook Pro 13\" (2017)", description: "The reliable workhorse for local development." },
+      { name: "External Monitor", description: "24-inch 1080p display for extra real estate." },
+      { name: "Mechanical Keyboard", description: "Blue switches for that tactile feedback." },
+    ]
+  },
+  {
+    title: "Software & Editor",
+    items: [
+      { name: "Cursor / VS Code", description: "Primary editor with AI assistance." },
+      { name: "JetBrains Mono", description: "The most readable font for long coding sessions." },
+      { name: "iTerm2 + Zsh", description: "Customized terminal with Oh My Zsh." },
+      { name: "Postman / Bruno", description: "Testing and documenting APIs." },
+    ]
+  },
+  {
+    title: "Stack & Tools",
+    items: [
+      { name: "React & Next.js", description: "For building modern web frontends." },
+      { name: "Go & Spring Boot", description: "Preferred for robust backend systems." },
+      { name: "Docker & Compose", description: "Containerizing everything for consistency." },
+      { name: "Cloudflare", description: "DNS, R2 storage, and web analytics." },
+    ]
+  },
+  {
+    title: "AI Tools",
+    items: [
+      { name: "Antigravity", description: "My primary AI coding partner." },
+      { name: "ChatGPT / Claude", description: "For research and complex logic planning." },
+      { name: "GitHub Copilot", description: "Autocompleting repetitive boilerplate." },
+    ]
+  }
+];
+---
+
+<BaseLayout title="Uses" description="A list of hardware, software, and tools I use daily.">
+  <div class="py-24">
+    <div class="container mx-auto px-4 max-w-3xl">
+      <header class="mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">Uses</h1>
+        <p class="text-xl text-muted-foreground leading-relaxed">
+          A collection of the hardware, software, and tools I use on a daily basis to build applications and manage my workflow.
+        </p>
+      </header>
+
+      <div class="space-y-16">
+        {categories.map((cat) => (
+          <section>
+            <h2 class="text-2xl font-bold mb-8 border-b border-border pb-2">{cat.title}</h2>
+            <ul class="space-y-8">
+              {cat.items.map((item) => (
+                <li>
+                  <h3 class="text-lg font-semibold mb-1">{item.name}</h3>
+                  <p class="text-muted-foreground">{item.description}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>

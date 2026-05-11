@@ -1,0 +1,222 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import Badge from "../../components/ui/Badge.astro";
+import ProjectCard from "../../components/work/ProjectCard.astro";
+import { getCollection } from "astro:content";
+import { getReadingTime } from "../../utils/readingTime";
+import { SUPPORTED_LOCALES, type Locale } from "../../i18n";
+
+export function getStaticPaths() {
+  return SUPPORTED_LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const isID = lang === "id";
+
+const featuredWork = await getCollection("work", ({ data }) => data.featured === true && data.lang === lang);
+const latestPosts = await getCollection("blog", ({ data }) => data.draft !== true && data.lang === lang);
+const sortedLatestPosts = latestPosts
+  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+  .slice(0, 3);
+
+const servicesPreview = isID
+  ? [
+      {
+        title: "Pengembangan MVP Full-stack",
+        who: "Untuk founder dan tim kecil yang sedang validasi produk.",
+        deliverables: "Landing page, fitur inti, dashboard admin, API backend, dan setup deployment.",
+      },
+      {
+        title: "Backend API & Integrasi",
+        who: "Untuk tim yang butuh pondasi backend yang stabil.",
+        deliverables: "REST API, autentikasi, skema database, integrasi pihak ketiga, dan logging.",
+      },
+      {
+        title: "Deployment, Debugging & Konsultasi",
+        who: "Untuk tim yang sedang go-live atau troubleshooting produksi.",
+        deliverables: "Setup Docker Compose, reverse proxy, SSL, tuning performa, dan investigasi bug.",
+      },
+    ]
+  : [
+      {
+        title: "Full-stack MVP Development",
+        who: "For founders and small teams validating product ideas.",
+        deliverables: "Landing page, core features, admin dashboard, API backend, and deployment setup.",
+      },
+      {
+        title: "Backend API & Integrations",
+        who: "For teams needing robust backend foundations.",
+        deliverables: "REST API, authentication, DB schema, third-party integrations, and logging.",
+      },
+      {
+        title: "Deployment, Debugging & Consulting",
+        who: "For teams shipping to production or troubleshooting issues.",
+        deliverables: "Docker Compose setup, reverse proxy, SSL, performance tuning, and bug investigation.",
+      },
+    ];
+
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat(isID ? "id-ID" : "en-US", { year: "numeric", month: "long", day: "numeric" }).format(date);
+---
+
+<BaseLayout
+  title={isID ? "Beranda" : "Home"}
+  description={isID ? "Portfolio, layanan, dan artikel Yosepri Berutu." : "Portfolio, services, and technical writing by Yosepri Berutu."}
+>
+  <section class="relative pt-20 pb-32 overflow-hidden">
+    <div class="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_50%,rgba(59,130,246,0.1),transparent)]"></div>
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+          {isID
+            ? "Saya membangun MVP, dashboard, dan backend API dengan pengembangan full-stack berbantuan AI."
+            : "I build MVPs, dashboards, and backend APIs with AI-assisted full-stack development."}
+        </h1>
+        <p class="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed">
+          {isID
+            ? "Saya Yosepri Berutu, software engineer yang membantu founder dan tim kecil mengubah ide menjadi aplikasi web yang siap pakai menggunakan React, Go, Laravel, Spring Boot, Flask, dan workflow deployment modern."
+            : "I’m Yosepri Berutu, a software engineer helping founders and small teams turn product ideas into usable web applications using React, Go, Laravel, Spring Boot, Flask, and modern deployment workflows."}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <Button href={`/${lang}/contact`} size="lg">{isID ? "Hubungi Saya" : "Hire Me"}</Button>
+          <Button href={`/${lang}/work`} variant="outline" size="lg">{isID ? "Lihat Studi Kasus" : "View Case Studies"}</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 border-y border-border bg-muted/35">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+        {(isID
+          ? ["Pengembangan MVP", "Backend API", "Dashboard Admin", "AI-assisted Dev", "DevOps & Deployment", "Technical Writing"]
+          : ["MVP Development", "Backend APIs", "Admin Dashboards", "AI-assisted Dev", "DevOps & Deployment", "Technical Writing"]
+        ).map((skill) => (
+          <div class="flex flex-col items-center text-center space-y-2">
+            <div class="h-1 bg-primary/20 w-12 mb-2 rounded-full overflow-hidden">
+              <div class="h-full bg-primary w-1/2 group-hover:w-full transition-all duration-500"></div>
+            </div>
+            <span class="text-sm font-medium text-muted-foreground">{skill}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+        <div>
+          <h2 class="text-3xl font-bold mb-4">{isID ? "Proyek Unggulan" : "Featured Work"}</h2>
+        </div>
+        <Button href={`/${lang}/work`} variant="ghost">{isID ? "Lihat semua proyek" : "View all projects"}</Button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {featuredWork.map((project) => (
+          <ProjectCard project={project} localePrefix={`/${lang}`} ctaLabel={isID ? "Lihat Studi Kasus" : "View Case Study"} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <h2 class="text-3xl font-bold mb-4">{isID ? "Ringkasan Layanan" : "Services Preview"}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+        {servicesPreview.map((service) => (
+          <Card class="p-6 h-full">
+            <h3 class="text-xl font-bold mb-3">{service.title}</h3>
+            <p class="text-sm text-muted-foreground mb-4">{service.who}</p>
+            <p class="text-sm text-muted-foreground">{service.deliverables}</p>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="flex items-end justify-between mb-12">
+        <h2 class="text-3xl font-bold">{isID ? "Artikel Terbaru" : "Latest Articles"}</h2>
+        <Button href={`/${lang}/blog`} variant="ghost">{isID ? "Lihat semua artikel" : "View all articles"}</Button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {sortedLatestPosts.map((post) => (
+          <a href={`/${lang}/blog/${post.id.replace(/^id\//, "").replace(/^en\//, "")}`} class="group">
+            <Card class="p-6 h-full hover:border-blue-500/50 transition-colors">
+              <div class="flex items-center gap-3 mb-4">
+                <Badge variant="outline">{post.data.category}</Badge>
+                <span class="text-xs text-muted-foreground">{getReadingTime(post.body)} {isID ? "mnt baca" : "min read"}</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{post.data.title}</h3>
+              <p class="text-sm text-muted-foreground mb-4 line-clamp-3">{post.data.description}</p>
+              <time class="text-xs text-muted-foreground">{formatDate(post.data.publishDate)}</time>
+            </Card>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 bg-muted/35 border-y border-border">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <h2 class="text-3xl font-bold mb-6">{isID ? "AI-Assisted Engineering" : "AI-Assisted Engineering"}</h2>
+          <p class="text-lg text-muted-foreground mb-8">
+            {isID
+              ? "Saya menggunakan AI agents untuk mempercepat planning, UI exploration, code generation, debugging, dan dokumentasi — sambil tetap menjaga judgment engineering untuk arsitektur, review, keamanan, dan production readiness."
+              : "I use AI agents to accelerate planning, UI exploration, code generation, debugging, and documentation — while still applying software engineering judgment for architecture, review, security, and production readiness."}
+          </p>
+          <ul class="space-y-4">
+            {(isID
+              ? [
+                  "Prototyping dan delivery MVP lebih cepat",
+                  "Debugging dan issue triage lebih efisien",
+                  "Dokumentasi teknis lebih konsisten",
+                  "Review arsitektur dan kualitas tetap ketat",
+                ]
+              : [
+                  "Faster prototyping and MVP shipping",
+                  "Rapid debugging and issue resolution",
+                  "More consistent technical documentation",
+                  "Strict architecture and quality review",
+                ]
+            ).map((item) => (
+              <li class="flex items-center space-x-3">
+                <svg class="h-5 w-5 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-muted-foreground">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="relative">
+          <div class="aspect-square glass rounded-3xl p-8 flex flex-col justify-center items-center text-center space-y-6">
+            <div class="w-20 h-20 bg-primary/15 rounded-2xl flex items-center justify-center">
+              <svg class="w-10 h-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold">{isID ? "AI adalah akselerator, bukan pengganti." : "AI is an accelerator, not a replacement."}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24">
+    <div class="container mx-auto px-4 max-w-4xl text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">
+        {isID ? "Punya masalah MVP, dashboard, atau backend API?" : "Have an MVP, dashboard, or backend problem to solve?"}
+      </h2>
+      <p class="text-lg text-muted-foreground mb-10">
+        {isID ? "Mari diskusikan bagaimana saya bisa membantu Anda membangun aplikasi yang siap production." : "Let’s discuss how I can help you turn your idea into a production-ready application."}
+      </p>
+      <Button href={`/${lang}/contact`} size="lg" class="px-12">{isID ? "Hubungi Saya" : "Get in Touch"}</Button>
+    </div>
+  </section>
+</BaseLayout>

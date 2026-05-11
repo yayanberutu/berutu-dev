@@ -1,0 +1,76 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Card from "../components/ui/Card.astro";
+import Badge from "../components/ui/Badge.astro";
+
+const experiments = [
+  {
+    name: "Flask Face Recognition API",
+    description: "A microservice for facial biometric detection and recognition.",
+    stack: ["Python", "Flask", "Dlib"],
+    status: "Beta",
+    link: "#"
+  },
+  {
+    name: "Spring Boot S3 Upload",
+    description: "Reactive file upload service with AWS S3 / Cloudflare R2 integration.",
+    stack: ["Java", "Spring Boot", "S3"],
+    status: "Stable",
+    link: "#"
+  },
+  {
+    name: "Go REST API Starter",
+    description: "A production-ready boilerplate for building APIs with Go and PostgreSQL.",
+    stack: ["Go", "PostgreSQL", "Docker"],
+    status: "Live",
+    link: "#"
+  },
+  {
+    name: "AI Agent UI Prompting",
+    description: "Experimental UI components generated through iterative AI agent prompting.",
+    stack: ["React", "Tailwind", "LLMs"],
+    status: "Experimental",
+    link: "#"
+  }
+];
+---
+
+<BaseLayout title="Lab" description="Experiments, mini projects, and technical proofs of concept.">
+  <div class="py-24">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <header class="mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">The Lab</h1>
+        <p class="text-xl text-muted-foreground max-w-2xl">
+          Experiments, mini projects, and technical proofs of concept. This is where I test new ideas and technologies.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {experiments.map((exp) => (
+          <Card class="p-8 flex flex-col h-full hover:border-blue-500/30 transition-colors">
+            <div class="flex justify-between items-start mb-4">
+              <Badge variant={exp.status === 'Stable' ? 'success' : 'secondary'}>{exp.status}</Badge>
+            </div>
+            <h2 class="text-xl font-bold mb-3">{exp.name}</h2>
+            <p class="text-muted-foreground text-sm mb-6 flex-grow">{exp.description}</p>
+            
+            <div class="flex flex-wrap gap-2 mb-8">
+              {exp.stack.map((tech) => (
+                <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-1 bg-muted rounded text-muted-foreground">
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <a href={exp.link} class="text-sm font-semibold text-primary hover:opacity-85 transition-colors flex items-center">
+              View Experiment
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>

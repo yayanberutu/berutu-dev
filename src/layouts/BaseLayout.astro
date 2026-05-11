@@ -1,0 +1,47 @@
+---
+import SiteHeader from "../components/layout/SiteHeader.astro";
+import SiteFooter from "../components/layout/SiteFooter.astro";
+import SEO from "../components/layout/SEO.astro";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: boolean;
+}
+
+const { title, description, image, article } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <SEO title={title} description={description} image={image} article={article} />
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem("theme");
+        const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+        const theme = stored === "light" || stored === "dark" ? stored : (prefersLight ? "light" : "dark");
+        const root = document.documentElement;
+        root.classList.remove("dark", "light");
+        root.classList.add(theme);
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen bg-background text-foreground selection:bg-primary/30 selection:text-foreground">
+    <div class="flex flex-col min-h-screen">
+      <SiteHeader />
+      <main class="flex-grow">
+        <slot />
+      </main>
+      <SiteFooter />
+    </div>
+  </body>
+</html>

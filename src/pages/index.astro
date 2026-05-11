@@ -1,0 +1,222 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/ui/Button.astro";
+import ProjectCard from "../components/work/ProjectCard.astro";
+import Card from "../components/ui/Card.astro";
+import Badge from "../components/ui/Badge.astro";
+import { getCollection } from "astro:content";
+import { getReadingTime } from "../utils/readingTime";
+
+const featuredWork = await getCollection("work", ({ data }) => {
+  return data.featured === true && data.lang === "en";
+});
+
+const latestPosts = await getCollection("blog", ({ data }) => {
+  return data.draft !== true && data.lang === "en";
+});
+const sortedLatestPosts = latestPosts
+  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+  .slice(0, 3);
+
+const servicesPreview = [
+  {
+    title: "Full-stack MVP Development",
+    who: "For founders and small teams validating product ideas.",
+    deliverables: "Landing page, core features, admin dashboard, API, and deployment setup.",
+  },
+  {
+    title: "Backend API & Integrations",
+    who: "For teams needing robust backend foundations.",
+    deliverables: "REST API, authentication, DB schema, third-party integrations, and logging.",
+  },
+  {
+    title: "Deployment, Debugging & Consulting",
+    who: "For teams shipping to production or troubleshooting issues.",
+    deliverables: "Docker Compose setup, reverse proxy, SSL, performance tuning, and bug investigation.",
+  },
+];
+
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric" }).format(date);
+---
+
+<BaseLayout>
+  <!-- Hero Section -->
+  <section class="relative pt-20 pb-32 overflow-hidden">
+    <div class="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_50%,rgba(59,130,246,0.1),transparent)]"></div>
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+          I build <span class="text-gradient">MVPs, dashboards,</span> and <span class="text-gradient">backend APIs</span> with AI-assisted full-stack development.
+        </h1>
+        <p class="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed">
+          I’m Yosepri Berutu, a software engineer helping founders and small teams turn product ideas into usable web applications using React, Go, Laravel, Spring Boot, Flask, and modern deployment workflows.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <Button href="/contact" size="lg">Hire Me</Button>
+          <Button href="/work" variant="outline" size="lg">View Case Studies</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skill Summary -->
+  <section class="py-20 border-y border-border bg-muted/35">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+        {[
+          "MVP Development",
+          "Backend APIs",
+          "Admin Dashboards",
+          "AI-assisted Dev",
+          "DevOps & Deployment",
+          "Technical Writing"
+        ].map((skill) => (
+          <div class="flex flex-col items-center text-center space-y-2">
+            <div class="h-1 bg-primary/20 w-12 mb-2 rounded-full overflow-hidden">
+              <div class="h-full bg-primary w-1/2 group-hover:w-full transition-all duration-500"></div>
+            </div>
+            <span class="text-sm font-medium text-muted-foreground">{skill}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Work -->
+  <section class="py-24">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+        <div>
+          <h2 class="text-3xl font-bold mb-4">Featured Work</h2>
+          <p class="text-muted-foreground max-w-2xl">
+            A selection of projects where I've helped clients build robust, scalable web applications from scratch.
+          </p>
+        </div>
+        <Button href="/work" variant="ghost" class="group">
+          View all projects 
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </Button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {featuredWork.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Preview -->
+  <section class="py-24">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="text-3xl font-bold mb-4">Services Preview</h2>
+          <p class="text-muted-foreground max-w-2xl">
+            What clients typically hire me for across MVP delivery, backend APIs, and production deployment.
+          </p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {servicesPreview.map((service) => (
+          <Card class="p-6 h-full">
+            <h3 class="text-xl font-bold mb-3">{service.title}</h3>
+            <p class="text-sm text-muted-foreground mb-4">{service.who}</p>
+            <p class="text-sm text-muted-foreground">{service.deliverables}</p>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Workflow -->
+  <section class="py-24 bg-muted/35 border-y border-border">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <h2 class="text-3xl font-bold mb-6">AI-Assisted Engineering</h2>
+          <p class="text-lg text-muted-foreground mb-8">
+            I use AI agents to accelerate planning, UI exploration, code generation, debugging, and documentation — while still applying software engineering judgment for architecture, review, security, and production readiness.
+          </p>
+          <ul class="space-y-4">
+            {[
+              "Faster prototyping and MVP shipping",
+              "Comprehensive test coverage and documentation",
+              "Rapid debugging and issue resolution",
+              "Modern tech stack optimization"
+            ].map((item) => (
+              <li class="flex items-center space-x-3">
+                <svg class="h-5 w-5 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-muted-foreground">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="relative">
+          <div class="aspect-square glass rounded-3xl p-8 flex flex-col justify-center items-center text-center space-y-6">
+            <div class="w-20 h-20 bg-primary/15 rounded-2xl flex items-center justify-center">
+              <svg class="w-10 h-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold">AI is an accelerator, not a replacement.</h3>
+            <p class="text-muted-foreground">
+              Every line of code is reviewed, tested, and architected with human engineering judgment.
+            </p>
+          </div>
+          <!-- Decorative element -->
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-primary/10 rounded-full blur-3xl"></div>
+          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Articles -->
+  <section class="py-24">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="text-3xl font-bold mb-4">Latest Articles</h2>
+          <p class="text-muted-foreground max-w-2xl">
+            Notes and case studies on AI-assisted engineering, full-stack implementation, and delivery workflow.
+          </p>
+        </div>
+        <Button href="/blog" variant="ghost">View all articles</Button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {sortedLatestPosts.map((post) => (
+          <a href={`/blog/${post.id}`} class="group">
+            <Card class="p-6 h-full hover:border-blue-500/50 transition-colors">
+              <div class="flex items-center gap-3 mb-4">
+                <Badge variant="outline">{post.data.category}</Badge>
+                <span class="text-xs text-muted-foreground">{getReadingTime(post.body)} min read</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                {post.data.title}
+              </h3>
+              <p class="text-sm text-muted-foreground mb-4 line-clamp-3">{post.data.description}</p>
+              <time class="text-xs text-muted-foreground">{formatDate(post.data.publishDate)}</time>
+            </Card>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24">
+    <div class="container mx-auto px-4 max-w-4xl text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Have an MVP, dashboard, or backend problem to solve?</h2>
+      <p class="text-lg text-muted-foreground mb-10">
+        Let’s discuss how I can help you turn your idea into a production-ready application.
+      </p>
+      <Button href="/contact" size="lg" class="px-12">Get in Touch</Button>
+    </div>
+  </section>
+</BaseLayout>

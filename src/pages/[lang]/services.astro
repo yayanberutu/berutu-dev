@@ -1,0 +1,121 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import { SUPPORTED_LOCALES, type Locale } from "../../i18n";
+
+export function getStaticPaths() {
+  return SUPPORTED_LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const isID = lang === "id";
+
+const services = isID
+  ? [
+      {
+        title: "Pengembangan MVP",
+        description: "Saya membantu founder dan tim kecil membangun versi produk pertama yang siap dipakai.",
+        deliverables: ["Landing page", "Sistem autentikasi", "Implementasi fitur inti", "Dashboard admin", "Desain database", "Setup deployment"],
+        idealFor: "Founder dengan ide, startup yang sedang validasi produk.",
+      },
+      {
+        title: "Dashboard Admin & Internal Tools",
+        description: "Tools internal untuk membantu operasional tim berjalan lebih efisien.",
+        deliverables: ["CRUD operations", "Role-based access control", "Data table + filter/search", "File upload management", "Reporting", "CSV/PDF export"],
+        idealFor: "Bisnis yang ingin merapikan workflow internal.",
+      },
+      {
+        title: "Pengembangan Backend API",
+        description: "API backend yang stabil, scalable, dan aman untuk aplikasi web/mobile.",
+        deliverables: ["REST API design", "Integrasi pihak ketiga", "Authentication & security", "Database schema", "API documentation", "Logging & monitoring"],
+        idealFor: "Tim produk/dev yang butuh backend specialist.",
+      },
+      {
+        title: "Deployment & DevOps",
+        description: "Membawa aplikasi dari local environment ke production secara aman.",
+        deliverables: ["VPS setup", "Docker Compose", "SSL/HTTPS (Caddy/Nginx)", "CI/CD", "DB migration & backup", "Performance tuning"],
+        idealFor: "Tim yang butuh go-live support dan stabilisasi production.",
+      },
+    ]
+  : [
+      {
+        title: "MVP Development",
+        description: "I help founders and small teams build the first usable version of their product.",
+        deliverables: ["Landing page", "Authentication system", "Core feature implementation", "Admin dashboard", "Database design", "Deployment setup"],
+        idealFor: "Founders with an idea, startups validating products.",
+      },
+      {
+        title: "Admin Dashboards & Internal Tools",
+        description: "Custom internal tools to manage your data and operations efficiently.",
+        deliverables: ["CRUD operations", "Role-based access control", "Data tables with filters/search", "File upload & management", "Reporting & Analytics", "CSV/PDF Export"],
+        idealFor: "Businesses needing to streamline internal workflows.",
+      },
+      {
+        title: "Backend API Development",
+        description: "Robust, scalable, and secure APIs to power your mobile or web applications.",
+        deliverables: ["RESTful API design", "Third-party integrations", "Authentication & Security", "Database schema optimization", "API Documentation (Swagger/OpenAPI)", "Logging & Monitoring"],
+        idealFor: "Developers or teams needing specialized backend expertise.",
+      },
+      {
+        title: "Deployment & DevOps",
+        description: "Getting your application from local development to a production environment.",
+        deliverables: ["VPS setup & configuration", "Docker & Docker Compose", "SSL/HTTPS (Caddy/Nginx)", "CI/CD pipelines", "Database migration & backup", "Performance tuning"],
+        idealFor: "Anyone needing help with production-ready hosting.",
+      },
+    ];
+---
+
+<BaseLayout title={isID ? "Layanan" : "Services"} description={isID ? "Layanan freelance backend dan full-stack." : "Professional freelance services for MVP development, backend APIs, and admin dashboards."}>
+  <div class="py-24">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <header class="mb-16 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">{isID ? "Layanan yang Saya Tawarkan" : "How I Can Help"}</h1>
+        <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+          {isID
+            ? "Saya membantu klien bergerak dari ide ke software yang berjalan — dari planning, implementasi UI, backend API, integrasi, hingga deployment."
+            : "I help clients move from idea to working software — from planning and UI implementation to backend APIs, integrations, and deployment."}
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {services.map((service) => (
+          <Card class="p-8 flex flex-col h-full hover:border-blue-500/30 transition-colors">
+            <h2 class="text-2xl font-bold mb-4">{service.title}</h2>
+            <p class="text-muted-foreground mb-6">{service.description}</p>
+            <div class="mb-8 flex-grow">
+              <h3 class="text-sm font-semibold uppercase tracking-wider mb-4">{isID ? "Contoh Deliverables" : "Sample Deliverables"}</h3>
+              <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+                {service.deliverables.map((item) => (
+                  <li class="flex items-start text-sm text-muted-foreground">
+                    <svg class="h-4 w-4 text-primary mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="pt-6 border-t border-border">
+              <p class="text-xs text-muted-foreground mb-4 italic"><strong>{isID ? "Cocok untuk:" : "Ideal for:"}</strong> {service.idealFor}</p>
+              <Button href={`/${lang}/contact`} variant="outline" class="w-full">{isID ? "Diskusikan layanan ini" : "Enquire about this"}</Button>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <div class="mt-20 p-12 glass rounded-3xl text-center">
+        <h2 class="text-2xl font-bold mb-4">{isID ? "Butuh bantuan lain?" : "Need something else?"}</h2>
+        <p class="text-muted-foreground mb-8 max-w-2xl mx-auto">
+          {isID
+            ? "Saya juga tersedia untuk konsultasi per jam, bug fixing, dan performance improvement untuk React, Go, Laravel, Spring Boot, dan Flask."
+            : "I'm also available for hourly consulting, bug fixing, and performance improvements in React, Go, Laravel, Spring Boot, and Flask."}
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <Button href={`/${lang}/contact`}>{isID ? "Ayo Diskusi" : "Let's Talk"}</Button>
+          <Button href={`/${lang}/work`} variant="ghost">{isID ? "Lihat Contoh Proyek" : "View Work Examples"}</Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

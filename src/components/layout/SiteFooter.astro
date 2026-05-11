@@ -1,0 +1,74 @@
+---
+import { site } from "../../data/site";
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-border bg-muted/35 py-12">
+  <div class="container mx-auto px-4 max-w-6xl">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div class="space-y-4">
+        <a href="/" class="inline-flex items-center" aria-label="berutu.dev home">
+          <img
+            src="/brand/logo-primary.png"
+            alt="berutu.dev"
+            class="h-7 w-auto dark:hidden"
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            src="/brand/logo-reversed.png"
+            alt="berutu.dev"
+            class="h-7 w-auto hidden dark:block"
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+        <p class="text-muted-foreground text-sm max-w-xs">
+          Helping founders and small teams ship MVPs, admin dashboards, and backend APIs faster.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h4 class="text-sm font-semibold uppercase tracking-wider">Social</h4>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a href={site.github} target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-foreground transition-colors">
+              GitHub
+            </a>
+          </li>
+          <li>
+            <a href={site.linkedin} target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-foreground transition-colors">
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a href={site.upwork} target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-foreground transition-colors">
+              Upwork
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="space-y-4">
+        <h4 class="text-sm font-semibold uppercase tracking-wider">Contact</h4>
+        <p class="text-sm text-muted-foreground">
+          Ready to start a project?
+        </p>
+        <div class="flex flex-col gap-2">
+          <a href={`mailto:${site.email}`} class="text-primary hover:opacity-85 font-medium transition-colors">
+            {site.email}
+          </a>
+          <a href="tel:+6282168797626" class="text-muted-foreground hover:text-foreground transition-colors text-sm">
+            {site.phone}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
+      <p>© {currentYear} {site.name}. All rights reserved.</p>
+      <p>Built with Astro, React, and AI agents.</p>
+    </div>
+  </div>
+</footer>

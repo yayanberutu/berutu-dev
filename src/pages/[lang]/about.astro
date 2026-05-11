@@ -1,0 +1,116 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import { SUPPORTED_LOCALES, type Locale } from "../../i18n";
+
+export function getStaticPaths() {
+  return SUPPORTED_LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const isID = lang === "id";
+---
+
+<BaseLayout title={isID ? "Tentang Saya" : "About Me"} description={isID ? "Profil Yosepri Berutu." : "Profile of Yosepri Berutu."}>
+  <div class="py-24">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <header class="mb-14">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">{isID ? "Halo, saya Yosepri Disyandro Berutu." : "Hi, I’m Yosepri Disyandro Berutu."}</h1>
+        <p class="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
+          {isID
+            ? "Saya backend engineer di Jakarta yang saat ini mengerjakan sistem pembayaran skala besar, sambil membantu founder dan tim kecil membangun MVP, dashboard admin, dan backend API."
+            : "I’m a backend engineer based in Jakarta, currently working on high-scale payment systems while helping founders and small teams ship MVPs, admin dashboards, and backend APIs."}
+        </p>
+      </header>
+
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+        <Card class="p-6">
+          <h2 class="text-sm uppercase tracking-wider text-muted-foreground mb-3">{isID ? "Yang Saya Bangun" : "What I Build"}</h2>
+          <p class="text-sm leading-relaxed text-muted-foreground">{isID ? "MVP produk, internal tools, dan sistem berbasis API yang siap production." : "Product MVPs, internal tools, and API-driven systems that can be deployed and maintained in production."}</p>
+        </Card>
+        <Card class="p-6">
+          <h2 class="text-sm uppercase tracking-wider text-muted-foreground mb-3">{isID ? "Kekuatan Utama" : "Primary Strength"}</h2>
+          <p class="text-sm leading-relaxed text-muted-foreground">{isID ? "Arsitektur backend, desain API, event-driven systems, dan payment-domain workflows." : "Backend architecture, API design, event-driven systems, and payment-domain workflows."}</p>
+        </Card>
+        <Card class="p-6">
+          <h2 class="text-sm uppercase tracking-wider text-muted-foreground mb-3">{isID ? "Fokus Saat Ini" : "Current Focus"}</h2>
+          <p class="text-sm leading-relaxed text-muted-foreground">{isID ? "Kolaborasi freelance untuk tim yang butuh eksekusi cepat dan rapi." : "Freelance collaboration for teams that need fast execution with clear technical judgment and clean delivery."}</p>
+        </Card>
+      </section>
+
+      <section class="mb-14">
+        <h2 class="text-2xl font-bold mb-5">{isID ? "Pengalaman Profesional" : "Professional Experience"}</h2>
+        <div class="grid grid-cols-1 gap-6">
+          <Card class="p-6">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
+              <div>
+                <h3 class="font-semibold">Software Development Engineer Backend</h3>
+                <p class="text-sm text-muted-foreground">PT. Aliansi Teknologi Indonesia (DANA Indonesia)</p>
+              </div>
+              <p class="text-sm text-muted-foreground">Apr 2022 – Present</p>
+            </div>
+            <p class="text-sm text-muted-foreground leading-relaxed">
+              {isID
+                ? "DANA adalah salah satu platform dompet digital dan pembayaran digital terdepan di Indonesia."
+                : "DANA is one of Indonesia’s leading digital wallet and digital payments platforms, serving millions of users and merchant transactions."}
+            </p>
+            <p class="text-sm text-muted-foreground leading-relaxed mt-3">
+              {isID
+                ? "Saya bagian dari core backend team dan menangani alur pembayaran end-to-end: service terdepan yang di-hit user (customer app & merchant app), business logic acquiring/fund, perpindahan uang (fund flow), komunikasi sistem ke partner eksternal, hingga backend push notification."
+                : "I’m part of the core backend team and have handled systems across the full payment flow: front-line backend services hit directly by users (both customer app and merchant app), business-logic layers for acquiring and fund products, fund-flow/money-movement processing, system communication with external third-party partners, and push notification backend services for user communication."}
+            </p>
+          </Card>
+
+          <Card class="p-6">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
+              <div>
+                <h3 class="font-semibold">Associate Software Development Engineer Backend</h3>
+                <p class="text-sm text-muted-foreground">PT. Global Digital Niaga (Blibli.com)</p>
+              </div>
+              <p class="text-sm text-muted-foreground">Sep 2021 – Mar 2022</p>
+            </div>
+            <p class="text-sm text-muted-foreground leading-relaxed">
+              {isID
+                ? "Mengembangkan dan menjaga layanan finance-tech backend dalam tim Scrum lintas fungsi, dari implementasi hingga support produksi."
+                : "Built and maintained finance-tech backend services, collaborated in a cross-functional Scrum team, and handled delivery from implementation through production support."}
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      <section class="mb-14">
+        <h2 class="text-2xl font-bold mb-5">{isID ? "Latar Belakang Teknis" : "Technical Background"}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card class="p-6">
+            <h3 class="font-semibold mb-3">{isID ? "Core Stack" : "Core Stack"}</h3>
+            <ul class="space-y-2 text-sm text-muted-foreground">
+              <li><strong>Languages:</strong> Java, Go, PHP, Python, TypeScript</li>
+              <li><strong>Frameworks:</strong> SOFA Boot (Spring-based), Spring Boot, React, Astro, Laravel, Flask</li>
+              <li><strong>Data:</strong> OceanBase, MySQL, PostgreSQL, Redis, NoSQL</li>
+            </ul>
+          </Card>
+          <Card class="p-6">
+            <h3 class="font-semibold mb-3">{isID ? "Infrastruktur & Platform" : "Infrastructure & Platform"}</h3>
+            <ul class="space-y-2 text-sm text-muted-foreground">
+              <li><strong>Containers:</strong> Docker, Docker Compose</li>
+              <li><strong>Proxy:</strong> Caddy, Nginx</li>
+              <li><strong>Messaging/Scheduler:</strong> Kafka, RabbitMQ, event-driven scheduler patterns</li>
+              <li><strong>Platform/Observability:</strong> Apache Nifi, Grafana, Splunk, Jenkins, GitHub Actions</li>
+            </ul>
+          </Card>
+        </div>
+      </section>
+
+      <section class="pt-10 border-t border-border">
+        <h2 class="text-2xl font-bold mb-4">{isID ? "Siap Kolaborasi" : "Open for Collaboration"}</h2>
+        <p class="text-muted-foreground mb-7 max-w-3xl">
+          {isID
+            ? "Saya terbuka untuk proyek freelance terkait pengembangan MVP, dashboard admin, backend API, serta deployment/debugging."
+            : "I’m currently available for freelance work focused on MVP development, admin dashboards, backend APIs, and deployment/debugging support."}
+        </p>
+        <Button href={`/${lang}/contact`}>{isID ? "Hubungi Saya" : "Get in Touch"}</Button>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

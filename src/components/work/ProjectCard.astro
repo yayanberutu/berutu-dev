@@ -1,0 +1,56 @@
+---
+import Card from '../ui/Card.astro';
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+
+interface Props {
+  localePrefix?: string;
+  ctaLabel?: string;
+  project: {
+    slug: string;
+    data: {
+      title: string;
+      subtitle: string;
+      description: string;
+      stack: string[];
+      coverImage?: string;
+      status: string;
+    };
+  };
+}
+
+const { project, localePrefix = "", ctaLabel = "View Case Study" } = Astro.props;
+const { title, subtitle, stack, coverImage, status } = project.data;
+const normalizedId = project.id.replace(/^id\//, "").replace(/^en\//, "");
+---
+
+<Card class="group h-full flex flex-col hover:border-blue-500/50 transition-all duration-300">
+  {coverImage && (
+    <div class="aspect-video overflow-hidden">
+      <img 
+        src={coverImage} 
+        alt={title} 
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+    </div>
+  )}
+  <div class="p-6 flex-grow flex flex-col">
+    <div class="flex justify-between items-start mb-4">
+      <Badge variant="success">{status}</Badge>
+    </div>
+    <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{title}</h3>
+    <p class="text-muted-foreground text-sm mb-6 flex-grow">{subtitle}</p>
+    
+    <div class="flex flex-wrap gap-2 mb-6">
+      {stack.map((tech) => (
+        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-1 bg-muted rounded text-muted-foreground">
+          {tech}
+        </span>
+      ))}
+    </div>
+
+    <Button href={`${localePrefix}/work/${normalizedId}`} variant="outline" size="sm" class="w-full">
+      {ctaLabel}
+    </Button>
+  </div>
+</Card>

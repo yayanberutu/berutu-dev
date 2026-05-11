@@ -1,0 +1,77 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Badge from "../components/ui/Badge.astro";
+import Button from "../components/ui/Button.astro";
+
+const { frontmatter } = Astro.props;
+const { 
+  title, 
+  subtitle, 
+  role, 
+  clientType, 
+  projectType, 
+  status, 
+  stack, 
+  demoUrl, 
+  githubUrl,
+  coverImage 
+} = frontmatter;
+---
+
+<BaseLayout title={title} description={subtitle} image={coverImage}>
+  <article class="pt-16 pb-24">
+    <header class="container mx-auto px-4 max-w-4xl mb-16">
+      <div class="flex flex-wrap gap-2 mb-6">
+        <Badge variant="success">{status}</Badge>
+        <Badge variant="outline">{projectType}</Badge>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">{title}</h1>
+      <p class="text-xl text-muted-foreground mb-12">{subtitle}</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 py-8 border-y border-border">
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Role</h3>
+          <p class="text-sm font-medium">{role}</p>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Client</h3>
+          <p class="text-sm font-medium">{clientType}</p>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Tech Stack</h3>
+          <div class="flex flex-wrap gap-1 mt-1">
+            {stack.map((item) => (
+              <span class="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{item}</span>
+            ))}
+          </div>
+        </div>
+        <div class="flex flex-col gap-2 justify-center">
+          {demoUrl && (
+            <Button href={demoUrl} target="_blank" rel="noopener noreferrer" size="sm">
+              Live Demo
+            </Button>
+          )}
+          {githubUrl && (
+            <Button href={githubUrl} target="_blank" rel="noopener noreferrer" variant="outline" size="sm">
+              GitHub
+            </Button>
+          )}
+        </div>
+      </div>
+    </header>
+
+    {coverImage && (
+      <div class="container mx-auto px-4 max-w-6xl mb-16">
+        <div class="aspect-video rounded-3xl overflow-hidden border border-border shadow-2xl">
+          <img src={coverImage} alt={title} class="w-full h-full object-cover" />
+        </div>
+      </div>
+    )}
+
+    <div class="container mx-auto px-4 max-w-3xl">
+      <div class="prose prose-blue lg:prose-lg mx-auto">
+        <slot />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
