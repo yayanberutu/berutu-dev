@@ -1833,3 +1833,80 @@ shipping v1 > perfect architecture
 ```
 
 The website must help the owner win freelance opportunities by showing real ability, clear services, and thoughtful AI-assisted engineering workflow.
+
+---
+
+## 29. Implementation Update (May 11, 2026)
+
+This section records approved scope changes after the original v1 PRD.
+
+### 29.1 Bilingual Rollout Status
+
+Bilingual support is now implemented and no longer optional.
+
+Supported locales:
+
+```txt
+en, id
+```
+
+Implemented route pattern:
+
+```txt
+/[lang]/...
+```
+
+Implemented examples:
+
+```txt
+/en/blog
+/id/blog
+/en/blog/[slug]
+/id/blog/[slug]
+```
+
+Legacy compatibility:
+
+- `/blog` redirects to `/en/blog` (`301`)
+- `/blog/[slug]` redirects to `/en/blog/[slug]` (`301`)
+
+### 29.2 Blog Requirements (Updated)
+
+Blog must be fully bilingual, including:
+
+1. Listing page content and empty state copy
+2. Detail page labels (including reading-time labels)
+3. Locale-aware article linking
+4. Locale-specific date formatting
+
+Content source remains Astro content collections with per-entry `lang` field.
+
+### 29.3 Branding Requirements (Updated)
+
+Brand assets are standardized under:
+
+```txt
+public/brand
+```
+
+Required files:
+
+- `logo-primary.png` (light mode)
+- `logo-reversed.png` (dark mode)
+- `icon-on-color.png` (favicon/app/social icon)
+- `logo-monochrome.png` (fallback/document use only)
+
+Usage rules:
+
+1. Header/Navbar uses theme-aware full logo on desktop.
+2. Mobile may use icon-only for cleaner layout.
+3. Footer uses theme-aware logo according to background/theme.
+4. Favicon and default social image fallback use `icon-on-color.png`.
+5. Avoid contrast errors (no dark logo on dark background, no light logo on light background).
+
+### 29.4 Documentation Source of Truth
+
+For current implementation details, this PRD addendum and `README.md` supersede older notes that said:
+
+- bilingual is postponed
+- default blog route is `/blog` as primary source
