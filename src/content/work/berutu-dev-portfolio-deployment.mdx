@@ -13,19 +13,21 @@ stack: ["Astro", "React", "TypeScript", "Tailwind CSS", "MDX", "Docker", "Caddy"
 featured: true
 demoUrl: "https://berutu.dev"
 githubUrl: "https://github.com/yayanberutu/berutu-dev"
-coverImage: ""
+coverImage: "/images/work/berutu-dev-deployment.svg"
 ---
 
 ## Overview
 
-`berutu.dev` was built as a personal portfolio, technical writing platform, and freelance credibility asset.  
-The goal was to present project experience clearly, publish technical articles consistently, and show real end-to-end engineering capability from frontend delivery to production deployment.
+`berutu.dev` is my portfolio + technical blog, built to help clients quickly verify two things:
 
-The website is positioned for founders and small teams looking for an AI-assisted full-stack developer who can ship MVPs, backend APIs, admin dashboards, and production-ready web applications.
+- I can build product-facing web experiences
+- I can deploy and operate them in production
+
+This project is the public proof of that workflow.
 
 ## Problem and Motivation
 
-Before this project, there was no dedicated platform to:
+Before this project, there was no single place that could:
 
 - present case studies in a professional format
 - publish technical writing with a clean reading experience
@@ -33,14 +35,21 @@ Before this project, there was no dedicated platform to:
 - run independently on a self-managed VPS
 - demonstrate deployment and operations capability in public
 
-For freelance and Upwork positioning, those gaps reduced trust and made technical capability harder to verify.
+For freelance and Upwork positioning, this created a trust gap.
 
 ## Solution
 
-I implemented a fast content-focused architecture using Astro, React, TypeScript, Tailwind CSS, and MDX.  
-Deployment was done on a Hetzner CPX12 Ubuntu VPS via Docker Compose, with Caddy as the reverse proxy and automatic HTTPS termination.
+I built a fast, content-first stack with Astro + MDX and deployed it on a self-managed VPS.
 
-This setup balances:
+Core setup:
+
+- Frontend/content: Astro, React, TypeScript, Tailwind CSS, MDX
+- Hosting: Hetzner CPX12 (Ubuntu)
+- Deployment: Docker Compose
+- Edge proxy + TLS: Caddy
+- DNS: Cloudflare
+
+Why this setup works:
 
 - high content velocity (MDX-based publishing)
 - strong frontend performance (Astro static output)
@@ -49,62 +58,47 @@ This setup balances:
 
 ## Architecture
 
-```text
-User Browser
-→ Cloudflare DNS
-→ Hetzner VPS
-→ Caddy Reverse Proxy
-→ Docker container: berutu-portfolio
-→ Astro static site
-```
-
-Infrastructure responsibilities:
-
-- Porkbun: domain registrar
-- Cloudflare: DNS provider
-- Hetzner CPX12: VPS hosting
-- Docker Compose: application deployment
-- Caddy: reverse proxy + HTTPS
+![berutu.dev architecture diagram](/images/work/berutu-dev-architecture.svg)
 
 ## Implementation Highlights
 
-### 1) Domain and DNS Setup
+### 1) Domain and DNS
 
 - Purchased `berutu.dev` from Porkbun
 - Changed nameservers from Porkbun to Cloudflare
-- Configured records:
+- Added DNS records:
 
 ```text
 A      @      -> 5.223.79.193
 CNAME  www    -> berutu.dev
 ```
 
-- DNS-only mode was used during early setup/validation
+- Used DNS-only mode for initial verification
 
 ### 2) VPS Provisioning
 
 - Provider: Hetzner
 - Plan: CPX12
 - OS: Ubuntu
-- Runtime user: `admin`
+- User: `admin`
 
 ### 3) Server Hardening
 
 - Enabled UFW firewall
-- Added 2GB swap to stabilize builds and deployment operations on limited RAM
-- Installed Docker Engine and Docker Compose plugin
+- Added 2GB swap for build/runtime stability
+- Installed Docker Engine + Docker Compose plugin
 
-### 4) Docker-Based Deployment
+### 4) Docker Deployment
 
 - Created external Docker network: `web`
-- Built and shipped the portfolio as a containerized service
-- Kept deployment reproducible and consistent across updates
+- Ran the portfolio as a dedicated container service
+- Kept deployment reproducible across updates
 
-### 5) Caddy Reverse Proxy
+### 5) Reverse Proxy with Caddy
 
-- Main Caddy container exposes ports `80` and `443`
-- Portfolio app serves HTTP internally as `berutu-portfolio:80`
-- Caddy handles public domain routing and HTTPS termination
+- Main Caddy container exposes `80/443`
+- Portfolio app serves internal HTTP at `berutu-portfolio:80`
+- Caddy handles public routing + HTTPS
 
 ```caddy
 berutu.dev {
@@ -119,12 +113,12 @@ www.berutu.dev {
 ### 6) Astro Production Build
 
 - Build artifact is static output from Astro
-- Runtime container serves static files behind the reverse proxy
-- Result: low operational complexity and strong performance characteristics
+- Runtime container serves static assets behind Caddy
+- Result: simple operations + fast delivery
 
 ### 7) Troubleshooting: Node.js Version Mismatch
 
-Initial build failed because the base image used Node.js 20 while Astro required newer Node.js.
+Initial Docker build failed because the image used Node.js 20 while Astro required a newer version.
 
 Fix:
 
@@ -132,9 +126,10 @@ Fix:
 FROM node:22-alpine AS build
 ```
 
-### 8) Troubleshooting: Caddy Reverse Proxy Conflict
+### 8) Troubleshooting: Reverse Proxy Conflict
 
-At first, a Caddyfile inside this repository attempted to terminate public domain traffic directly, conflicting with the main VPS-level Caddy service.
+At first, a repo-level Caddyfile tried to terminate the public domain directly.  
+This conflicted with the VPS-level Caddy instance.
 
 Resolution:
 
@@ -142,7 +137,7 @@ Resolution:
 - Portfolio container serves internal HTTP only
 - Main Caddy proxies traffic to `berutu-portfolio:80`
 
-### 9) Troubleshooting: DNS Propagation
+### 9) Troubleshooting: DNS Propagation Delay
 
 During rollout, Cloudflare authoritative nameservers returned the correct IP, while some recursive resolvers still returned Porkbun parking IPs:
 
@@ -190,11 +185,15 @@ server: Caddy
 
 ## Outcome
 
-- `https://berutu.dev` is live and stable
+`https://berutu.dev` is live, stable, and production-ready.
+
+Key outcomes:
+
 - HTTPS works end-to-end through Caddy
-- Portfolio is served from a Docker container behind the reverse proxy
-- Setup is extensible for future subdomains such as:
+- the site is served from a Docker container behind the reverse proxy
+- deployment workflow is reproducible for future updates
+- infrastructure is ready for future subdomains such as:
   - `hkbp.berutu.dev`
   - `api-hkbp.berutu.dev`
 
-The project demonstrates end-to-end delivery capability from domain purchase and DNS migration to production deployment and troubleshooting.
+This project demonstrates end-to-end delivery from domain setup to production operations.

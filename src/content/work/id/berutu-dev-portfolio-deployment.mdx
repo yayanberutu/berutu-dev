@@ -13,7 +13,7 @@ stack: ["Astro", "React", "TypeScript", "Tailwind CSS", "MDX", "Docker", "Caddy"
 featured: true
 demoUrl: "https://berutu.dev"
 githubUrl: "https://github.com/yayanberutu/berutu-dev"
-coverImage: ""
+coverImage: "/images/work/berutu-dev-deployment.svg"
 ---
 
 ## Ringkasan
@@ -49,22 +49,7 @@ Pendekatan ini menyeimbangkan:
 
 ## Arsitektur
 
-```text
-User Browser
-→ Cloudflare DNS
-→ Hetzner VPS
-→ Caddy Reverse Proxy
-→ Docker container: berutu-portfolio
-→ Astro static site
-```
-
-Pembagian tanggung jawab infrastruktur:
-
-- Porkbun: registrar domain
-- Cloudflare: DNS provider
-- Hetzner CPX12: VPS hosting
-- Docker Compose: deployment aplikasi
-- Caddy: reverse proxy + HTTPS
+![Diagram arsitektur berutu.dev](/images/work/berutu-dev-architecture.svg)
 
 ## Sorotan Implementasi
 

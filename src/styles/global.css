@@ -203,3 +203,18 @@
 .article-content.prose a {
   @apply font-medium;
 }
+
+.article-content.prose code:not(pre code) {
+  color: hsl(var(--foreground));
+}
+
+.light .article-content.prose pre.astro-code {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.light .article-content.prose pre.astro-code code,
+.light .article-content.prose pre.astro-code span {
+  color: #0f172a !important;
+  background: transparent !important;
+}
