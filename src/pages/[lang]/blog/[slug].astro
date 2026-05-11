@@ -1,0 +1,59 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Badge from "../../../components/ui/Badge.astro";
+import { getReadingTime } from "../../../utils/readingTime";
+import { SUPPORTED_LOCALES, type Locale } from "../../../i18n";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => data.draft !== true);
+  return SUPPORTED_LOCALES.flatMap((lang) =>
+    posts
+      .filter((post) => post.data.lang === lang)
+      .map((post) => ({
+      params: { lang, slug: post.id.replace(/^id\//, "").replace(/^en\//, "") },
+      props: { post },
+    }))
+  );
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const isID = lang === "id";
+const { post } = Astro.props;
+const { Content } = await render(post);
+const readingTime = getReadingTime(post.body);
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat(isID ? "id-ID" : "en-US", { year: "numeric", month: "long", day: "numeric" }).format(date);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} article={true}>
+  <article class="pt-16 pb-28">
+    <header class="container mx-auto px-4 max-w-4xl mb-10">
+      <a href={`/${lang}/blog`} class="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
+        ← {isID ? "Kembali ke Blog" : "Back to Blog"}
+      </a>
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <Badge variant="outline">{post.data.category}</Badge>
+        <time class="text-sm text-muted-foreground" datetime={post.data.publishDate.toISOString()}>{formatDate(post.data.publishDate)}</time>
+        <span class="text-sm text-muted-foreground">{readingTime} {isID ? "mnt baca" : "min read"}</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-5">{post.data.title}</h1>
+      <p class="text-lg text-muted-foreground leading-relaxed max-w-3xl mb-8">{post.data.description}</p>
+      <div class="flex flex-wrap gap-2 mb-10">
+        {post.data.tags.map((tag) => (
+          <span class="text-xs text-muted-foreground font-mono bg-muted px-2.5 py-1 rounded-md border border-border">#{tag}</span>
+        ))}
+      </div>
+      {post.data.coverImage && (
+        <div class="aspect-video rounded-2xl overflow-hidden border border-border shadow-lg">
+          <img src={post.data.coverImage} alt={post.data.title} class="w-full h-full object-cover" />
+        </div>
+      )}
+    </header>
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="article-content prose prose-blue mx-auto">
+        <Content />
+      </div>
+    </div>
+  </article>
+</BaseLayout>

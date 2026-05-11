@@ -1,0 +1,87 @@
+---
+import { site, navigation } from "../../data/site";
+import MobileMenu from "./MobileMenu";
+import ThemeToggle from "./ThemeToggle";
+import { detectLocaleFromPath, getLanguageSwitchPath, localizePath, type Locale } from "../../i18n";
+
+const pathname = Astro.url.pathname;
+const currentLocale = detectLocaleFromPath(pathname);
+const activeLocale: Locale = currentLocale || "en";
+const switchToLocale: Locale = activeLocale === "en" ? "id" : "en";
+const switchPath = getLanguageSwitchPath(pathname, switchToLocale);
+const labels = {
+  en: { hireMe: "Hire Me", switchLabel: "ID" },
+  id: { hireMe: "Hubungi Saya", switchLabel: "EN" },
+} as const;
+---
+
+<header class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+  <div class="container mx-auto px-4 h-16 flex items-center justify-between max-w-6xl">
+    <a href="/" class="flex items-center group" aria-label="berutu.dev home">
+      <img
+        src="/brand/logo-primary.png"
+        alt="berutu.dev"
+        class="h-7 w-auto hidden md:block dark:hidden"
+        loading="eager"
+        decoding="async"
+      />
+      <img
+        src="/brand/logo-reversed.png"
+        alt="berutu.dev"
+        class="h-7 w-auto hidden md:dark:block"
+        loading="eager"
+        decoding="async"
+      />
+      <img
+        src="/brand/icon-on-color.png"
+        alt="berutu.dev"
+        class="h-8 w-8 rounded-sm md:hidden"
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+
+    <nav class="hidden md:flex items-center space-x-8">
+      {
+        navigation.map((item) => (
+          <a
+            href={localizePath(item.href, activeLocale)}
+            class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {activeLocale === "id"
+              ? item.name === "Home"
+                ? "Beranda"
+                : item.name === "Work"
+                  ? "Proyek"
+                  : item.name === "Services"
+                    ? "Layanan"
+                    : item.name === "About"
+                      ? "Tentang"
+                      : item.name === "Contact"
+                        ? "Kontak"
+                        : item.name
+              : item.name}
+          </a>
+        ))
+      }
+      <a
+        href={switchPath}
+        class="inline-flex items-center justify-center px-3 py-2 text-xs font-semibold border border-border rounded-md hover:bg-accent transition-colors"
+      >
+        {labels[activeLocale].switchLabel}
+      </a>
+      <a
+        href={localizePath("/contact", activeLocale)}
+        class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-primary-foreground bg-primary rounded-lg hover:opacity-90 transition-opacity"
+      >
+        {labels[activeLocale].hireMe}
+      </a>
+      <ThemeToggle client:load />
+    </nav>
+
+    <div class="md:hidden flex items-center gap-2">
+      <ThemeToggle client:load />
+      <MobileMenu client:load />
+    </div>
+  </div>
+</header>

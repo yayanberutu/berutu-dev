@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#g2)" />
+  <rect x="72" y="72" width="1136" height="576" rx="18" fill="none" stroke="#334155" stroke-width="2" />
+  <text x="120" y="300" fill="#e2e8f0" font-size="56" font-family="Inter, Arial, sans-serif" font-weight="700">
+    Face Recognition Attendance API
+  </text>
+  <text x="120" y="356" fill="#22d3ee" font-size="30" font-family="Inter, Arial, sans-serif">
+    Flask • Dlib • PostgreSQL • Docker
+  </text>
+  <text x="120" y="408" fill="#94a3b8" font-size="24" font-family="Inter, Arial, sans-serif">
+    Portfolio case-study placeholder image
+  </text>
+</svg>

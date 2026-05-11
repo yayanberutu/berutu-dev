@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  berutu-portfolio:
+    build: .
+    container_name: berutu-portfolio
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true

@@ -1,0 +1,53 @@
+---
+import { site } from "../../data/site";
+import { localizePath, stripLocaleFromPath } from "../../i18n";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: boolean;
+}
+
+const {
+  title: pageTitle,
+  description: pageDescription,
+  image: pageImage,
+  article,
+} = Astro.props;
+
+const title = pageTitle ? `${pageTitle} | ${site.domain}` : site.title;
+const description = pageDescription || site.description;
+const image = new URL(pageImage || "/brand/icon-on-color.png", Astro.url);
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || site.url);
+const strippedPath = stripLocaleFromPath(Astro.url.pathname);
+const alternateEn = new URL(localizePath(strippedPath, "en"), Astro.site || site.url);
+const alternateId = new URL(localizePath(strippedPath, "id"), Astro.site || site.url);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/png" href="/brand/icon-on-color.png" />
+<link rel="apple-touch-icon" href="/brand/icon-on-color.png" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+<link rel="alternate" hreflang="en" href={alternateEn} />
+<link rel="alternate" hreflang="id-ID" href={alternateId} />
+<link rel="alternate" hreflang="x-default" href={alternateEn} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={article ? "article" : "website"} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={image} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={image} />

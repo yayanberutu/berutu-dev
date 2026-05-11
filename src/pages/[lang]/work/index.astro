@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ProjectCard from "../../../components/work/ProjectCard.astro";
+import { getCollection } from "astro:content";
+import { SUPPORTED_LOCALES, type Locale } from "../../../i18n";
+
+export function getStaticPaths() {
+  return SUPPORTED_LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const isID = lang === "id";
+const workEntries = await getCollection("work", ({ data }) => data.lang === lang);
+---
+
+<BaseLayout title={isID ? "Proyek" : "Work"} description={isID ? "Studi kasus dan proyek backend/full-stack." : "Case studies and backend/full-stack projects."}>
+  <div class="py-24">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <header class="mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">{isID ? "Proyek" : "Work"}</h1>
+      </header>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {workEntries.map((project) => (
+          <ProjectCard project={project} localePrefix={`/${lang}`} ctaLabel={isID ? "Lihat Studi Kasus" : "View Case Study"} />
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
