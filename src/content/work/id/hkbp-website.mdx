@@ -16,23 +16,60 @@ coverImage: "/images/work/hkbp-cover.svg"
 
 ## Ringkasan
 
-Saya membangun website ini sebagai kontribusi pribadi untuk gereja. Selain melayani kebutuhan komunitas, proyek ini juga menjadi studi kasus nyata untuk workflow full-stack berbantuan AI.
+Saya membangun website ini sebagai kontribusi pribadi untuk gereja. Proyek ini juga jadi studi kasus nyata untuk membangun produk full-stack dengan workflow engineering berbantuan AI.
+
+Yang disediakan:
+
+- website publik untuk jemaat dan calon pengunjung
+- workflow admin yang sederhana untuk mengelola konten
+- publikasi PDF warta mingguan (arsip rapi)
+- informasi event dan jadwal yang terpusat
 
 ### Tantangan
 
-Masalah umum komunikasi komunitas yang perlu diselesaikan:
-- Pengumuman tersebar di banyak chat
-- PDF warta sulit ditemukan
-- Jadwal kegiatan tidak terpusat
-- Informasi publik tidak mudah diakses
-- Admin butuh alur manajemen konten yang sederhana
+Komunikasi komunitas sering tersebar di banyak channel dan file.
+
+Masalah yang paling sering muncul:
+
+- pengumuman tersebar di banyak chat
+- PDF warta sulit ditemukan dan tidak searchable
+- jadwal kegiatan tidak terpusat
+- informasi publik tidak mudah diakses
+- admin butuh alur manajemen konten yang mudah untuk non-teknis
 
 ### Solusi
 
-Platform terpusat untuk:
-- Menyediakan website publik
-- Mempublikasikan jadwal dan event
-- Mengelola pengumuman
-- Upload dan tampilkan PDF warta
-- Merapikan organisasi konten
-- Menyediakan workflow yang ramah admin
+Platform terpusat yang:
+
+- menyajikan halaman publik yang jelas dan konsisten
+- mempublikasikan pengumuman dan jadwal dengan rapi
+- upload dan tampilkan PDF warta dengan pengalaman baca yang nyaman
+- fokus ke workflow admin yang low-friction
+
+## Pendekatan (High Level)
+
+Prioritas implementasi:
+
+- cepat ship v1 yang bisa dipakai
+- mudah dirawat oleh tim gereja
+- performa bagus untuk pengguna mobile
+
+## Arsitektur (Simplified)
+
+```text
+User Browser
+→ Cloudflare (DNS/CDN sesuai kebutuhan)
+→ Hosting aplikasi (containerized)
+→ Web app (React) + API (Go)
+→ MySQL + object storage (R2) untuk file
+```
+
+## Status Saat Ini dan Next Steps
+
+Status: **In Progress**
+
+Rencana berikutnya:
+
+- merapikan alur admin berdasarkan feedback pemakaian
+- memperkuat informasi arsitektur konten pengumuman dan event
+- menambahkan browsing/search yang lebih baik untuk arsip warta

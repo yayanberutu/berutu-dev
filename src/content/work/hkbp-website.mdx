@@ -16,23 +16,60 @@ coverImage: "/images/work/hkbp-cover.svg"
 
 ## Overview
 
-I built this website as a personal contribution to my church. Beyond serving the church community, the project also became a real-world case study for building a full-stack web application with an AI-assisted development workflow.
+I built this website as a personal contribution to my church. It is also a real-world case study for shipping a full-stack product with an AI-assisted engineering workflow.
+
+What it delivers:
+
+- a public-facing church website
+- admin-friendly content management
+- PDF publishing for weekly bulletins (warta)
+- event and schedule information in one place
 
 ### The Problem
 
-Common church/community communication problems:
-- Announcements scattered across chats
-- Warta PDFs hard to access
-- Event schedules not centralized
-- Public information not easily discoverable
-- Admin needs a simple way to manage content
+Church/community communication tends to fragment across group chats and PDFs.
+
+The most common issues:
+
+- announcements scattered across multiple channels
+- warta PDFs hard to find and not searchable
+- events and schedules not centralized
+- public information not easily discoverable
+- admins need a simple, low-friction publishing workflow
 
 ### The Solution
 
-A centralized platform to:
-- Provide public website
-- Publish schedules and events
-- Manage announcements
-- Upload and display warta PDFs
-- Improve content organization
-- Create admin-friendly workflow
+A centralized platform that:
+
+- provides clear public pages (profile, services, updates)
+- publishes announcements and schedules consistently
+- uploads and presents warta PDFs with a clean reading experience
+- supports an admin workflow designed for non-technical users
+
+## Approach (High Level)
+
+I optimized for:
+
+- fast initial delivery (ship a usable v1 early)
+- simple maintenance for church admins
+- performance and accessibility for mobile users
+
+## Architecture (Simplified)
+
+```text
+User Browser
+→ Cloudflare (DNS/CDN as needed)
+→ App hosting (containerized)
+→ Web app (React) + API (Go)
+→ MySQL + object storage (R2) for files
+```
+
+## Current Status and Next Steps
+
+Status: **In Progress**
+
+Planned improvements:
+
+- refine admin flows based on real usage
+- improve information architecture for announcements and events
+- add better search/browsing for warta archives
