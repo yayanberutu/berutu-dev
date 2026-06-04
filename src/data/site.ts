@@ -1,5 +1,6 @@
 export const site = {
   name: "Yosepri Berutu",
+  companyName: "PT Berutu Teknologi Indonesia",
   domain: "berutu.dev",
   url: "https://berutu.dev",
   title: "berutu.dev — AI-assisted Full-Stack Developer",
