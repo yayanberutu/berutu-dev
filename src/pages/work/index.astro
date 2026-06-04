@@ -1,26 +1,4 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import ProjectCard from "../../components/work/ProjectCard.astro";
-import { getCollection } from "astro:content";
-
-const workEntries = await getCollection("work", ({ data }) => data.lang === "en");
+import WorkIndex from "../../components/pages/work/index.astro";
 ---
-
-<BaseLayout title="Work" description="A showcase of full-stack projects, MVPs, and backend APIs.">
-  <div class="py-24">
-    <div class="container mx-auto px-4 max-w-6xl">
-      <header class="mb-16">
-        <h1 class="text-4xl md:text-5xl font-bold mb-6">Work</h1>
-        <p class="text-xl text-muted-foreground max-w-2xl">
-          I help founders and small teams ship MVPs, admin dashboards, and backend APIs faster. Here are some of the projects I've built.
-        </p>
-      </header>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {workEntries.map((project) => (
-          <ProjectCard project={project} />
-        ))}
-      </div>
-    </div>
-  </div>
-</BaseLayout>
+<WorkIndex lang="en" />

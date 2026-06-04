@@ -8,11 +8,10 @@ import { getCollection } from "astro:content";
 import { getReadingTime } from "../../utils/readingTime";
 import { SUPPORTED_LOCALES, type Locale } from "../../i18n";
 
-export function getStaticPaths() {
-  return SUPPORTED_LOCALES.map((lang) => ({ params: { lang } }));
+interface Props {
+  lang: Locale;
 }
-
-const { lang } = Astro.params as { lang: Locale };
+const { lang } = Astro.props;
 const isID = lang === "id";
 
 const featuredWork = await getCollection("work", ({ data }) => data.featured === true && data.lang === lang);

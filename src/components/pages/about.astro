@@ -4,11 +4,10 @@ import Button from "../../components/ui/Button.astro";
 import Card from "../../components/ui/Card.astro";
 import { SUPPORTED_LOCALES, type Locale } from "../../i18n";
 
-export function getStaticPaths() {
-  return SUPPORTED_LOCALES.map((lang) => ({ params: { lang } }));
+interface Props {
+  lang: Locale;
 }
-
-const { lang } = Astro.params as { lang: Locale };
+const { lang } = Astro.props;
 const isID = lang === "id";
 ---
 

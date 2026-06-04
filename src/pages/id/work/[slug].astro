@@ -1,0 +1,15 @@
+---
+import { getCollection } from "astro:content";
+import WorkSlug from "../../../components/pages/work/[slug].astro";
+
+export async function getStaticPaths() {
+  const workEntries = await getCollection("work", ({ data }) => data.lang === "id");
+  return workEntries.map((entry) => ({
+    params: { slug: entry.id.replace(/^id\//, "") },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+<WorkSlug lang="id" entry={entry} />
