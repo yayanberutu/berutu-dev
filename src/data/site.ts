@@ -6,7 +6,7 @@ export const site = {
   title: "berutu.dev — AI-assisted Full-Stack Developer",
   description:
     "I help founders and small teams ship MVPs, admin dashboards, and backend APIs faster with React, Go, Laravel, Spring Boot, Flask, and AI-assisted development.",
-  email: "yoseprib@gmail.com",
+  email: "berutu.dev@gmail.com",
   github: "https://github.com/yayanberutu",
   linkedin: "https://www.linkedin.com/in/yosepriberutu/",
   upwork: "https://www.upwork.com/freelancers/~01e29a1b08948d644b?viewMode=1",
