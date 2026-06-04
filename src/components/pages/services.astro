@@ -4,35 +4,38 @@ import Button from "../../components/ui/Button.astro";
 import Card from "../../components/ui/Card.astro";
 import { SUPPORTED_LOCALES, type Locale } from "../../i18n";
 
-export function getStaticPaths() {
-  return SUPPORTED_LOCALES.map((lang) => ({ params: { lang } }));
+interface Props {
+  lang: Locale;
 }
-
-const { lang } = Astro.params as { lang: Locale };
+const { lang } = Astro.props;
 const isID = lang === "id";
 
 const services = isID
   ? [
       {
         title: "Pengembangan MVP",
+        price: "Mulai dari Rp 15.000.000",
         description: "Saya membantu founder dan tim kecil membangun versi produk pertama yang siap dipakai.",
         deliverables: ["Landing page", "Sistem autentikasi", "Implementasi fitur inti", "Dashboard admin", "Desain database", "Setup deployment"],
         idealFor: "Founder dengan ide, startup yang sedang validasi produk.",
       },
       {
         title: "Dashboard Admin & Internal Tools",
+        price: "Mulai dari Rp 8.000.000",
         description: "Tools internal untuk membantu operasional tim berjalan lebih efisien.",
         deliverables: ["CRUD operations", "Role-based access control", "Data table + filter/search", "File upload management", "Reporting", "CSV/PDF export"],
         idealFor: "Bisnis yang ingin merapikan workflow internal.",
       },
       {
         title: "Pengembangan Backend API",
+        price: "Mulai dari Rp 5.000.000",
         description: "API backend yang stabil, scalable, dan aman untuk aplikasi web/mobile.",
         deliverables: ["REST API design", "Integrasi pihak ketiga", "Authentication & security", "Database schema", "API documentation", "Logging & monitoring"],
         idealFor: "Tim produk/dev yang butuh backend specialist.",
       },
       {
         title: "Deployment & DevOps",
+        price: "Mulai dari Rp 2.500.000",
         description: "Membawa aplikasi dari local environment ke production secara aman.",
         deliverables: ["VPS setup", "Docker Compose", "SSL/HTTPS (Caddy/Nginx)", "CI/CD", "DB migration & backup", "Performance tuning"],
         idealFor: "Tim yang butuh go-live support dan stabilisasi production.",
@@ -41,24 +44,28 @@ const services = isID
   : [
       {
         title: "MVP Development",
+        price: "Mulai dari Rp 15.000.000",
         description: "I help founders and small teams build the first usable version of their product.",
         deliverables: ["Landing page", "Authentication system", "Core feature implementation", "Admin dashboard", "Database design", "Deployment setup"],
         idealFor: "Founders with an idea, startups validating products.",
       },
       {
         title: "Admin Dashboards & Internal Tools",
+        price: "Mulai dari Rp 8.000.000",
         description: "Custom internal tools to manage your data and operations efficiently.",
         deliverables: ["CRUD operations", "Role-based access control", "Data tables with filters/search", "File upload & management", "Reporting & Analytics", "CSV/PDF Export"],
         idealFor: "Businesses needing to streamline internal workflows.",
       },
       {
         title: "Backend API Development",
+        price: "Mulai dari Rp 5.000.000",
         description: "Robust, scalable, and secure APIs to power your mobile or web applications.",
         deliverables: ["RESTful API design", "Third-party integrations", "Authentication & Security", "Database schema optimization", "API Documentation (Swagger/OpenAPI)", "Logging & Monitoring"],
         idealFor: "Developers or teams needing specialized backend expertise.",
       },
       {
         title: "Deployment & DevOps",
+        price: "Mulai dari Rp 2.500.000",
         description: "Getting your application from local development to a production environment.",
         deliverables: ["VPS setup & configuration", "Docker & Docker Compose", "SSL/HTTPS (Caddy/Nginx)", "CI/CD pipelines", "Database migration & backup", "Performance tuning"],
         idealFor: "Anyone needing help with production-ready hosting.",
@@ -81,7 +88,8 @@ const services = isID
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         {services.map((service) => (
           <Card class="p-8 flex flex-col h-full hover:border-blue-500/30 transition-colors">
-            <h2 class="text-2xl font-bold mb-4">{service.title}</h2>
+            <h2 class="text-2xl font-bold mb-2">{service.title}</h2>
+            <p class="text-lg font-semibold text-emerald-400 mb-4">{service.price}</p>
             <p class="text-muted-foreground mb-6">{service.description}</p>
             <div class="mb-8 flex-grow">
               <h3 class="text-sm font-semibold uppercase tracking-wider mb-4">{isID ? "Contoh Deliverables" : "Sample Deliverables"}</h3>

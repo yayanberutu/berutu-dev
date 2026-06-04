@@ -27,6 +27,7 @@ export function stripLocaleFromPath(pathname: string): string {
 export function localizePath(path: string, locale: Locale): string {
   const hasLocalizedPrefix = LOCALIZED_PREFIXES.some((prefix) => path.startsWith(prefix));
   if (!LOCALIZED_EXACT_PATHS.has(path) && !hasLocalizedPrefix) return path;
+  if (locale === "en") return path;
   return path === "/" ? `/${locale}` : `/${locale}${path}`;
 }
 

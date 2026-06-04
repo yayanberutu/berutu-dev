@@ -1,4 +1,4 @@
 ---
-// Keep the root homepage aligned with localized pages.
-return Astro.redirect("/en", 302);
+import HomePage from "../components/pages/index.astro";
 ---
+<HomePage lang="en" />
