@@ -16,10 +16,15 @@ const isID = lang === "id";
     <div class="container mx-auto px-4 max-w-5xl">
       <header class="mb-14">
         <h1 class="text-4xl md:text-5xl font-bold mb-6">{isID ? "Halo, saya Yosepri Disyandro Berutu." : "Hi, I’m Yosepri Disyandro Berutu."}</h1>
-        <p class="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
+        <p class="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed mb-4">
           {isID
             ? "Saya backend engineer di Jakarta yang saat ini mengerjakan sistem pembayaran skala besar, sambil membantu founder dan tim kecil membangun MVP, dashboard admin, dan backend API."
             : "I’m a backend engineer based in Jakarta, currently working on high-scale payment systems while helping founders and small teams ship MVPs, admin dashboards, and backend APIs."}
+        </p>
+        <p class="text-sm font-medium text-muted-foreground/80 bg-muted/50 inline-block px-3 py-1.5 rounded-md border border-border">
+          {isID
+            ? "Semua layanan profesional dan pengembangan software dioperasikan secara legal di bawah entitas bisnis PT Berutu Teknologi Indonesia."
+            : "All professional services and software development are legally operated under PT Berutu Teknologi Indonesia."}
         </p>
       </header>
 
