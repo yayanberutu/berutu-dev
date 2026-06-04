@@ -25,10 +25,11 @@ export function stripLocaleFromPath(pathname: string): string {
 }
 
 export function localizePath(path: string, locale: Locale): string {
-  const hasLocalizedPrefix = LOCALIZED_PREFIXES.some((prefix) => path.startsWith(prefix));
-  if (!LOCALIZED_EXACT_PATHS.has(path) && !hasLocalizedPrefix) return path;
+  const normalizedPath = path.endsWith("/") && path.length > 1 ? path.slice(0, -1) : path;
+  const hasLocalizedPrefix = LOCALIZED_PREFIXES.some((prefix) => normalizedPath.startsWith(prefix));
+  if (!LOCALIZED_EXACT_PATHS.has(normalizedPath) && !hasLocalizedPrefix) return path;
   if (locale === "en") return path;
-  return path === "/" ? `/${locale}` : `/${locale}${path}`;
+  return normalizedPath === "/" ? `/${locale}` : `/${locale}${normalizedPath}`;
 }
 
 export function getLanguageSwitchPath(pathname: string, target: Locale): string {
