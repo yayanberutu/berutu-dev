@@ -6,6 +6,7 @@ import Card from "../components/ui/Card.astro";
 const services = [
   {
     title: "MVP Development",
+    price: "Mulai dari Rp 15.000.000",
     description: "I help founders and small teams build the first usable version of their product.",
     deliverables: [
       "Landing page",
@@ -19,6 +20,7 @@ const services = [
   },
   {
     title: "Admin Dashboards & Internal Tools",
+    price: "Mulai dari Rp 8.000.000",
     description: "Custom internal tools to manage your data and operations efficiently.",
     deliverables: [
       "CRUD operations",
@@ -32,6 +34,7 @@ const services = [
   },
   {
     title: "Backend API Development",
+    price: "Mulai dari Rp 5.000.000",
     description: "Robust, scalable, and secure APIs to power your mobile or web applications.",
     deliverables: [
       "RESTful API design",
@@ -45,6 +48,7 @@ const services = [
   },
   {
     title: "Deployment & DevOps",
+    price: "Mulai dari Rp 2.500.000",
     description: "Getting your application from local development to a production environment.",
     deliverables: [
       "VPS setup & configuration",
@@ -72,7 +76,8 @@ const services = [
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         {services.map((service) => (
           <Card class="p-8 flex flex-col h-full hover:border-blue-500/30 transition-colors">
-            <h2 class="text-2xl font-bold mb-4">{service.title}</h2>
+            <h2 class="text-2xl font-bold mb-2">{service.title}</h2>
+            <p class="text-lg font-semibold text-emerald-400 mb-4">{service.price}</p>
             <p class="text-muted-foreground mb-6">{service.description}</p>
             
             <div class="mb-8 flex-grow">
