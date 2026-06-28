@@ -13,13 +13,36 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
+    "@astrojs/node": "^10.1.4",
     "@astrojs/react": "^5.0.4",
     "@tailwindcss/vite": "^4.3.0",
+    "@tiptap/extension-image": "^3.27.1",
+    "@tiptap/extension-link": "^3.27.1",
+    "@tiptap/extension-placeholder": "^3.27.1",
+    "@tiptap/react": "^3.27.1",
+    "@tiptap/starter-kit": "^3.27.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "astro": "^6.3.1",
+    "astro": "^6.4.8",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.11.1",
+    "dompurify": "^3.4.11",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "isomorphic-dompurify": "^3.18.0",
+    "jsonwebtoken": "^9.0.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "tailwindcss": "^4.3.0"
+    "tailwindcss": "^4.3.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/dompurify": "^3.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "drizzle-kit": "^0.31.10",
+    "typescript": "^6.0.3"
   }
 }

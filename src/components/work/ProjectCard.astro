@@ -1,35 +1,29 @@
 ---
+import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
 import Card from '../ui/Card.astro';
 import Badge from '../ui/Badge.astro';
 import Button from '../ui/Button.astro';
 
 interface Props {
+  project: CollectionEntry<"work">;
   localePrefix?: string;
   ctaLabel?: string;
-  project: {
-    slug: string;
-    data: {
-      title: string;
-      subtitle: string;
-      description: string;
-      stack: string[];
-      coverImage?: string;
-      status: string;
-    };
-  };
 }
 
 const { project, localePrefix = "", ctaLabel = "View Case Study" } = Astro.props;
 const { title, subtitle, stack, coverImage, status } = project.data;
-const normalizedId = project.id.replace(/^id\//, "").replace(/^en\//, "");
+const normalizedId = project.id ? (project.id as string).replace(/^id\//, "").replace(/^en\//, "") : (project as any).slug;
 ---
 
 <Card class="group h-full flex flex-col hover:border-blue-500/50 transition-all duration-300">
   {coverImage && (
     <div class="aspect-video overflow-hidden">
-      <img 
+      <Image 
         src={coverImage} 
         alt={title} 
+        width={800}
+        height={450}
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       />
     </div>

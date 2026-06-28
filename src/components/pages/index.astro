@@ -5,7 +5,9 @@ import Card from "../../components/ui/Card.astro";
 import Badge from "../../components/ui/Badge.astro";
 import ProjectCard from "../../components/work/ProjectCard.astro";
 import { getCollection } from "astro:content";
-import { getReadingTime } from "../../utils/readingTime";
+import { db } from "../../db";
+import { articles } from "../../db/schema";
+import { eq, desc } from "drizzle-orm";
 import { SUPPORTED_LOCALES, type Locale } from "../../i18n";
 
 interface Props {
@@ -15,10 +17,12 @@ const { lang } = Astro.props;
 const isID = lang === "id";
 
 const featuredWork = await getCollection("work", ({ data }) => data.featured === true && data.lang === lang);
-const latestPosts = await getCollection("blog", ({ data }) => data.draft !== true && data.lang === lang);
-const sortedLatestPosts = latestPosts
-  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
-  .slice(0, 3);
+const sortedLatestPosts = db.select()
+  .from(articles)
+  .where(eq(articles.status, "published"))
+  .orderBy(desc(articles.publishedAt))
+  .limit(3)
+  .all();
 
 const servicesPreview = isID
   ? [
@@ -139,19 +143,19 @@ const formatDate = (date: Date) =>
     <div class="container mx-auto px-4 max-w-6xl">
       <div class="flex items-end justify-between mb-12">
         <h2 class="text-3xl font-bold">{isID ? "Artikel Terbaru" : "Latest Articles"}</h2>
-        <Button href={`/${lang}/blog`} variant="ghost">{isID ? "Lihat semua artikel" : "View all articles"}</Button>
+        <Button href={`/blog`} variant="ghost">{isID ? "Lihat semua artikel" : "View all articles"}</Button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         {sortedLatestPosts.map((post) => (
-          <a href={`/${lang}/blog/${post.id.replace(/^id\//, "").replace(/^en\//, "")}`} class="group">
+          <a href={`/blog/${post.slug}`} class="group">
             <Card class="p-6 h-full hover:border-blue-500/50 transition-colors">
               <div class="flex items-center gap-3 mb-4">
-                <Badge variant="outline">{post.data.category}</Badge>
-                <span class="text-xs text-muted-foreground">{getReadingTime(post.body)} {isID ? "mnt baca" : "min read"}</span>
+                <Badge variant="outline">{post.category}</Badge>
+                <span class="text-xs text-muted-foreground">{post.readingTimeMinutes} {isID ? "mnt baca" : "min read"}</span>
               </div>
-              <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{post.data.title}</h3>
-              <p class="text-sm text-muted-foreground mb-4 line-clamp-3">{post.data.description}</p>
-              <time class="text-xs text-muted-foreground">{formatDate(post.data.publishDate)}</time>
+              <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{post.title}</h3>
+              <p class="text-sm text-muted-foreground mb-4 line-clamp-3">{post.description}</p>
+              <time class="text-xs text-muted-foreground">{formatDate(new Date(post.publishedAt || post.createdAt))}</time>
             </Card>
           </a>
         ))}

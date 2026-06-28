@@ -1,49 +1,84 @@
 ---
-import { getCollection, render } from "astro:content";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Badge from "../../../components/ui/Badge.astro";
-import { getReadingTime } from "../../../utils/readingTime";
+import PraiseButton from "../../../components/blog/PraiseButton";
+import { db } from "../../../db";
+import { articles, articleTags } from "../../../db/schema";
+import { eq, and } from "drizzle-orm";
 import { SUPPORTED_LOCALES, type Locale } from "../../../i18n";
+import { Image } from "astro:assets";
 
 interface Props {
-  lang: Locale;
-  post: any;
+  slug: string;
 }
-const { lang, post } = Astro.props;
-const isID = lang === "id";
-const { Content } = await render(post);
-const readingTime = getReadingTime(post.body);
-const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat(isID ? "id-ID" : "en-US", { year: "numeric", month: "long", day: "numeric" }).format(date);
+const { slug } = Astro.props;
+const isID = false;
+const user = Astro.locals.user;
+
+// Fetch article from DB
+const article = db.select()
+  .from(articles)
+  .where(and(
+    eq(articles.slug, slug),
+    user ? undefined : eq(articles.status, "published") // Admin can view drafts
+  )).get();
+
+if (!article) {
+  Astro.response.status = 404;
+  return Astro.rewrite('/404');
+}
+
+const tags = db.select().from(articleTags).where(eq(articleTags.articleId, article.id)).all().map(t => t.tag);
+
+const formatDate = (dateStr: string | null) => {
+  if (!dateStr) return "Draft";
+  const date = new Date(dateStr);
+  return new Intl.DateTimeFormat(isID ? "id-ID" : "en-US", { year: "numeric", month: "long", day: "numeric" }).format(date);
+};
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} article={true}>
+<BaseLayout title={article.title} description={article.description} article={true}>
   <article class="pt-16 pb-28">
     <header class="container mx-auto px-4 max-w-4xl mb-10">
-      <a href={`/${lang}/blog`} class="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
-        ← {isID ? "Kembali ke Blog" : "Back to Blog"}
-      </a>
-      <div class="flex flex-wrap items-center gap-3 mb-6">
-        <Badge variant="outline">{post.data.category}</Badge>
-        <time class="text-sm text-muted-foreground" datetime={post.data.publishDate.toISOString()}>{formatDate(post.data.publishDate)}</time>
-        <span class="text-sm text-muted-foreground">{readingTime} {isID ? "mnt baca" : "min read"}</span>
+      <div class="flex items-center justify-between mb-8">
+        <a href={`/blog`} class="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
+          ← {isID ? "Kembali ke Blog" : "Back to Blog"}
+        </a>
+        
+        {user && (
+          <a href={`/admin/articles/${article.id}/edit`} class="inline-flex items-center justify-center px-3 py-1.5 bg-secondary text-secondary-foreground text-xs font-medium rounded hover:bg-secondary/80 transition-colors">
+            Edit Article
+          </a>
+        )}
       </div>
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-5">{post.data.title}</h1>
-      <p class="text-lg text-muted-foreground leading-relaxed max-w-3xl mb-8">{post.data.description}</p>
+
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <Badge variant="outline">{article.category}</Badge>
+        <time class="text-sm text-muted-foreground" datetime={article.publishedAt || article.createdAt}>{formatDate(article.publishedAt)}</time>
+        <span class="text-sm text-muted-foreground">{article.readingTimeMinutes} {isID ? "mnt baca" : "min read"}</span>
+        
+        {article.status !== 'published' && (
+          <Badge variant="outline" class="bg-amber-500/10 text-amber-500 border-amber-500/20">{article.status.toUpperCase()}</Badge>
+        )}
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-5">{article.title}</h1>
+      <p class="text-lg text-muted-foreground leading-relaxed max-w-3xl mb-8">{article.description}</p>
       <div class="flex flex-wrap gap-2 mb-10">
-        {post.data.tags.map((tag) => (
-          <span class="text-xs text-muted-foreground font-mono bg-muted px-2.5 py-1 rounded-md border border-border">#{tag}</span>
+        {tags.map((tag) => (
+          <a href={`/blog?tag=${tag}`} class="text-xs text-muted-foreground font-mono bg-muted hover:bg-muted/80 transition-colors px-2.5 py-1 rounded-md border border-border">#{tag}</a>
         ))}
       </div>
-      {post.data.coverImage && (
+      {article.coverImageUrl && (
         <div class="aspect-video rounded-2xl overflow-hidden border border-border shadow-lg">
-          <img src={post.data.coverImage} alt={post.data.title} class="w-full h-full object-cover" />
+          <Image src={article.coverImageUrl} alt={article.title} width={1200} height={675} class="w-full h-full object-cover" />
         </div>
       )}
     </header>
     <div class="container mx-auto px-4 max-w-4xl">
-      <div class="article-content prose prose-blue mx-auto">
-        <Content />
+      <div class="article-content prose prose-blue mx-auto" set:html={article.contentHtml}></div>
+      
+      <div class="mt-16 pt-8 border-t border-border flex flex-col items-center justify-center">
+        <PraiseButton client:load slug={slug} initialCount={article.praiseCount} />
       </div>
     </div>
   </article>

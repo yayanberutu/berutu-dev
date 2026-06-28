@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import ArticleEditor from "../../../../components/admin/ArticleEditor";
+import { db } from "../../../../db";
+import { articles, articleTags } from "../../../../db/schema";
+import { eq } from "drizzle-orm";
+
+const idParam = Astro.params.id;
+if (!idParam) return Astro.redirect('/admin/articles');
+
+const id = parseInt(idParam);
+const article = db.select().from(articles).where(eq(articles.id, id)).get();
+
+if (!article) return Astro.redirect('/admin/articles');
+
+const tags = db.select().from(articleTags).where(eq(articleTags.articleId, id)).all().map(t => t.tag);
+const articleWithTags = { ...article, tags };
+---
+
+<BaseLayout title={`Edit Article: ${article.title}`} description="Edit an existing blog article.">
+  <div class="container mx-auto px-4 py-12 max-w-6xl">
+    <div class="mb-8 flex items-center gap-4">
+      <a href="/admin/articles" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+        ← Back to Articles
+      </a>
+      <div class="h-4 w-px bg-border"></div>
+      <span class="text-sm font-medium">Edit Article</span>
+    </div>
+    <ArticleEditor client:only="react" mode="edit" article={articleWithTags} />
+  </div>
+</BaseLayout>

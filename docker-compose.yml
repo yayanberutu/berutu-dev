@@ -6,9 +6,16 @@ services:
     container_name: berutu-portfolio
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "4321:4321"
+    volumes:
+      - berutu-data:/app/data
+    env_file:
+      - .env
     networks:
       - web
+
+volumes:
+  berutu-data:
 
 networks:
   web:
