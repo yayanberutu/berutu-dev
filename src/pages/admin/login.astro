@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LoginForm from "../../components/admin/LoginForm";
+
+if (Astro.locals.user) {
+  return Astro.redirect('/admin/articles');
+}
+---
+
+<BaseLayout title="Admin Login" description="Sign in to manage berutu.dev content.">
+  <div class="min-h-[80vh] flex items-center justify-center py-20 px-4">
+    <LoginForm client:load />
+  </div>
+</BaseLayout>

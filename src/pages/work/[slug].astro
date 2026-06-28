@@ -2,14 +2,21 @@
 import { getCollection } from "astro:content";
 import WorkSlug from "../../components/pages/work/[slug].astro";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
-  const workEntries = await getCollection("work", ({ data }) => data.lang === "en");
-  return workEntries.map((entry) => ({
-    params: { slug: entry.id.replace(/^en\//, "") },
-    props: { entry },
-  }));
+  const workEntries = await getCollection("work");
+  return workEntries.map((entry) => {
+    // If the entry id has a language prefix (e.g. en/ or id/), strip it for the slug
+    // or just use the base file name.
+    const slug = entry.id.split('/').pop() || entry.id;
+    return {
+      params: { slug },
+      props: { entry },
+    };
+  });
 }
 
 const { entry } = Astro.props;
 ---
-<WorkSlug lang="en" entry={entry} />
+<WorkSlug entry={entry} />

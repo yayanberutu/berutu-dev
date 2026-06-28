@@ -4,12 +4,8 @@ import ProjectCard from "../../../components/work/ProjectCard.astro";
 import { getCollection } from "astro:content";
 import { SUPPORTED_LOCALES, type Locale } from "../../../i18n";
 
-interface Props {
-  lang: Locale;
-}
-const { lang } = Astro.props;
-const isID = lang === "id";
-const workEntries = await getCollection("work", ({ data }) => data.lang === lang);
+const isID = false;
+const workEntries = await getCollection("work");
 ---
 
 <BaseLayout title={isID ? "Proyek" : "Work"} description={isID ? "Studi kasus dan proyek backend/full-stack." : "Case studies and backend/full-stack projects."}>
@@ -20,7 +16,7 @@ const workEntries = await getCollection("work", ({ data }) => data.lang === lang
       </header>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {workEntries.map((project) => (
-          <ProjectCard project={project} localePrefix={`/${lang}`} ctaLabel={isID ? "Lihat Studi Kasus" : "View Case Study"} />
+          <ProjectCard project={project} localePrefix="" ctaLabel={isID ? "Lihat Studi Kasus" : "View Case Study"} />
         ))}
       </div>
     </div>

@@ -11,13 +11,19 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Serve
-FROM caddy:2-alpine
-WORKDIR /usr/share/caddy
+FROM node:22-alpine
+WORKDIR /app
 
-# Copy static files from build stage
-COPY --from=build /app/dist /usr/share/caddy
+# Copy built files and dependencies
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./
 
-# Copy Caddyfile
-COPY Caddyfile /etc/caddy/Caddyfile
+# Create data directory for SQLite
+RUN mkdir -p /app/data
 
-EXPOSE 80
+ENV HOST=0.0.0.0
+ENV PORT=4321
+
+EXPOSE 4321
+CMD ["node", "./dist/server/entry.mjs"]
