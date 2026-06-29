@@ -2,6 +2,8 @@
 import SiteHeader from "../components/layout/SiteHeader.astro";
 import SiteFooter from "../components/layout/SiteFooter.astro";
 import SEO from "../components/layout/SEO.astro";
+import { Toaster } from 'sonner';
+import 'highlight.js/styles/atom-one-dark.css';
 import "../styles/global.css";
 
 interface Props {
@@ -9,15 +11,17 @@ interface Props {
   description?: string;
   image?: string;
   article?: boolean;
+  publishedTime?: string | null;
+  authorName?: string | null;
 }
 
-const { title, description, image, article } = Astro.props;
+const { title, description, image, article, publishedTime, authorName } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <SEO title={title} description={description} image={image} article={article} />
+    <SEO title={title} description={description} image={image} article={article} publishedTime={publishedTime} authorName={authorName} />
     <script is:inline>
       (() => {
         const stored = localStorage.getItem("theme");
@@ -43,5 +47,6 @@ const { title, description, image, article } = Astro.props;
       </main>
       <SiteFooter />
     </div>
+    <Toaster client:load theme="dark" position="top-center" />
   </body>
 </html>

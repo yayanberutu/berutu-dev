@@ -20,7 +20,6 @@ export const articles = sqliteTable('articles', {
   contentHtml: text('content_html').notNull(),
   contentJson: text('content_json').notNull(),
   coverImageUrl: text('cover_image_url'),
-  lang: text('lang').notNull().default('en'),
   category: text('category').notNull().default('General'),
   status: text('status').notNull().default('draft'), // draft, published, disabled
   featured: integer('featured', { mode: 'boolean' }).notNull().default(false),

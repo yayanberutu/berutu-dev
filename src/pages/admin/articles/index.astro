@@ -1,10 +1,30 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import ArticleList from "../../../components/admin/ArticleList";
+import { db } from "../../../db";
+import { articles, articleTags } from "../../../db/schema";
+import { desc, inArray } from "drizzle-orm";
+
+let fetchedArticles = db.select().from(articles).orderBy(desc(articles.createdAt)).all();
+
+const articleIds = fetchedArticles.map(a => a.id);
+const allTagsData = articleIds.length > 0 
+  ? db.select().from(articleTags).where(inArray(articleTags.articleId, articleIds)).all()
+  : [];
+const tagsByArticleId = allTagsData.reduce((acc, row) => {
+  if (!acc[row.articleId]) acc[row.articleId] = [];
+  acc[row.articleId].push(row.tag);
+  return acc;
+}, {} as Record<number, string[]>);
+
+const initialArticles = fetchedArticles.map(a => ({
+  ...a,
+  tags: tagsByArticleId[a.id] || []
+}));
 ---
 
 <BaseLayout title="Admin - Articles" description="Manage your blog articles.">
   <div class="container mx-auto px-4 py-12 max-w-6xl">
-    <ArticleList client:load />
+    <ArticleList client:load initialArticles={initialArticles} />
   </div>
 </BaseLayout>

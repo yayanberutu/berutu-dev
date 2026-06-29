@@ -5,9 +5,6 @@ import Badge from "../../../components/ui/Badge.astro";
 import { db } from "../../../db";
 import { articles, articleTags } from "../../../db/schema";
 import { eq, and, desc, inArray } from "drizzle-orm";
-import { SUPPORTED_LOCALES, type Locale } from "../../../i18n";
-
-const isID = false;
 
 // Get user from locals for conditional rendering
 const user = Astro.locals.user;
@@ -39,10 +36,17 @@ const posts = fetchedArticles.map(a => ({
   tags: tagsByArticleId[a.id] || []
 }));
 
-// Filter by tag if selected
-const filteredPosts = selectedTag 
-  ? posts.filter(p => p.tags.includes(selectedTag))
-  : posts;
+const featuredArticleRaw = !selectedTag ? fetchedArticles.find(a => a.featured) : null;
+const featuredArticle = featuredArticleRaw ? {
+  ...featuredArticleRaw,
+  tags: tagsByArticleId[featuredArticleRaw.id] || []
+} : null;
+
+// Filter by tag if selected, and exclude featured article if not filtering by tag
+const filteredPosts = posts.filter(p => {
+  if (selectedTag) return p.tags.includes(selectedTag);
+  return p.id !== featuredArticle?.id;
+});
 
 // Get all unique tags for the filter bar
 const allTags = Array.from(new Set(posts.flatMap(p => p.tags))).sort();
@@ -50,25 +54,23 @@ const allTags = Array.from(new Set(posts.flatMap(p => p.tags))).sort();
 const formatDate = (dateStr: string | null) => {
   if (!dateStr) return "";
   const date = new Date(dateStr);
-  return new Intl.DateTimeFormat(isID ? "id-ID" : "en-US", { year: "numeric", month: "long", day: "numeric" }).format(date);
+  return new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric" }).format(date);
 };
 ---
 
-<BaseLayout title={isID ? "Blog" : "Blog"} description={isID ? "Artikel teknis dan catatan engineering." : "Technical articles and engineering notes."}>
+<BaseLayout title="Blog" description="Technical articles and engineering notes.">
   <div class="py-24">
     <div class="container mx-auto px-4 max-w-6xl">
       <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 class="text-4xl md:text-5xl font-bold mb-6">Blog</h1>
           <p class="text-xl text-muted-foreground max-w-2xl">
-            {isID
-              ? "Artikel teknis, catatan engineering, dan breakdown proyek."
-              : "Technical articles, engineering notes, and project breakdowns."}
+            Technical articles, engineering notes, and project breakdowns.
           </p>
         </div>
         {user && (
           <a href="/admin/articles/new" class="inline-flex items-center justify-center px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:opacity-90 transition-opacity whitespace-nowrap">
-            ✍️ {isID ? "Tulis Artikel" : "Write Article"}
+            ✍️ Write Article
           </a>
         )}
       </header>
@@ -93,6 +95,43 @@ const formatDate = (dateStr: string | null) => {
         </div>
       )}
 
+      {/* Featured Article */}
+      {featuredArticle && (
+        <div class="mb-16">
+          <a href={`/blog/${featuredArticle.slug}`} class="group block">
+            <div class="relative rounded-3xl overflow-hidden glass border border-border group-hover:border-primary/50 transition-all duration-300 h-[400px] md:h-[500px]">
+              {featuredArticle.coverImageUrl ? (
+                <img src={featuredArticle.coverImageUrl} alt={featuredArticle.title} class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              ) : (
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20"></div>
+              )}
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+              
+              <div class="absolute bottom-0 left-0 right-0 p-8 md:p-12">
+                <div class="flex items-center gap-3 mb-4">
+                  <Badge variant="default" class="bg-primary text-primary-foreground border-none">Featured</Badge>
+                  <Badge variant="outline" class="text-white border-white/30 bg-white/10 backdrop-blur-md">{featuredArticle.category}</Badge>
+                  <time class="text-sm text-gray-300">{formatDate(featuredArticle.publishedAt)}</time>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 group-hover:text-primary-100 transition-colors leading-tight max-w-4xl">{featuredArticle.title}</h2>
+                <p class="text-gray-300 text-lg line-clamp-2 max-w-3xl mb-6">{featuredArticle.description}</p>
+                <div class="flex items-center gap-4">
+                  <div class="flex gap-2">
+                    {featuredArticle.tags.slice(0, 3).map((tag: string) => (
+                      <span class="text-xs text-white/80 bg-white/10 backdrop-blur-md px-2 py-1 rounded">#{tag}</span>
+                    ))}
+                  </div>
+                  <div class="flex items-center gap-1.5 text-sm text-white/80 font-medium">
+                    <span>👏</span>
+                    <span>{featuredArticle.praiseCount}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      )}
+
       {filteredPosts.length > 0 ? (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPosts.map((post) => (
@@ -102,7 +141,7 @@ const formatDate = (dateStr: string | null) => {
                   <div class="flex items-center flex-wrap gap-3 mb-4">
                     <Badge variant="outline">{post.category}</Badge>
                     <time class="text-xs text-muted-foreground">{formatDate(post.publishedAt)}</time>
-                    <span class="text-xs text-muted-foreground">{post.readingTimeMinutes} {isID ? "mnt baca" : "min read"}</span>
+                    <span class="text-xs text-muted-foreground">{post.readingTimeMinutes} min read</span>
                   </div>
                   <h2 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">{post.title}</h2>
                   <p class="text-muted-foreground text-sm mb-4 flex-grow line-clamp-3">{post.description}</p>
@@ -128,13 +167,13 @@ const formatDate = (dateStr: string | null) => {
         <div class="py-20 text-center glass rounded-3xl">
           <p class="text-muted-foreground italic">
             {selectedTag 
-              ? (isID ? `Tidak ada artikel untuk tag #${selectedTag}.` : `No articles found for tag #${selectedTag}.`)
-              : (isID ? "Artikel baru akan segera hadir." : "New articles coming soon.")
+              ? `No articles found for tag #${selectedTag}.`
+              : "New articles coming soon."
             }
           </p>
           {selectedTag && (
             <a href={`/blog`} class="inline-block mt-4 text-sm text-primary hover:underline">
-              {isID ? "Lihat semua artikel" : "View all articles"}
+              View all articles
             </a>
           )}
         </div>
