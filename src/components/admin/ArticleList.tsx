@@ -1,37 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-export default function ArticleList() {
-  const [articles, setArticles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchArticles = async () => {
-    try {
-      const res = await fetch('/api/articles');
-      if (res.ok) {
-        const data = await res.json();
-        setArticles(data);
-      }
-    } catch (err) {
-      console.error('Failed to fetch articles', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchArticles();
-  }, []);
+export default function ArticleList({ initialArticles }: { initialArticles: any[] }) {
+  const [articles, setArticles] = useState<any[]>(initialArticles || []);
 
   const handleStatusChange = async (id: number, status: string) => {
+    setArticles(articles.map(a => a.id === id ? { ...a, status } : a));
     try {
-      const res = await fetch(`/api/articles/${id}/status`, {
+      await fetch(`/api/articles/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
       });
-      if (res.ok) {
-        fetchArticles();
-      }
     } catch (err) {
       console.error('Failed to update status', err);
     }
@@ -40,19 +19,15 @@ export default function ArticleList() {
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this article permanently?')) return;
     
+    setArticles(articles.filter(a => a.id !== id));
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchArticles();
-      }
+      await fetch(`/api/articles/${id}`, { method: 'DELETE' });
     } catch (err) {
       console.error('Failed to delete article', err);
     }
   };
 
-  if (loading) {
-    return <div className="py-20 text-center">Loading articles...</div>;
-  }
+
 
   return (
     <div className="w-full">
@@ -73,7 +48,6 @@ export default function ArticleList() {
               <tr className="border-b border-border bg-muted/30">
                 <th className="py-3 px-4 font-semibold text-sm">Title</th>
                 <th className="py-3 px-4 font-semibold text-sm">Status</th>
-                <th className="py-3 px-4 font-semibold text-sm">Language</th>
                 <th className="py-3 px-4 font-semibold text-sm">Praise</th>
                 <th className="py-3 px-4 font-semibold text-sm text-right">Actions</th>
               </tr>
@@ -111,9 +85,6 @@ export default function ArticleList() {
                         <option value="published">Published</option>
                         <option value="disabled">Disabled</option>
                       </select>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className="text-xs font-mono uppercase text-muted-foreground border border-border px-1.5 py-0.5 rounded">{article.lang}</span>
                     </td>
                     <td className="py-4 px-4 text-sm text-muted-foreground">
                       👏 {article.praiseCount}
